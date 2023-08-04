@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import './App.css';
-import Layout from "./Layout";
+import Layout from "./components/Layout";
 import AgentLayout from "./components/AgentLayout";
 import LoginPage from "./pages/user/LoginPage";
 import IndexPages from "./pages/user/IndexPages";
@@ -27,11 +27,15 @@ function App() {
             <Route index element={<IndexPages />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/profile" element={<Account />} />
+            <Route path="/bookings" element={<Account />} />
+            <Route path="/favourites" element={<Account />} />
+            <Route path="/contact" element={<Account />} />
             <Route path="/account/:subpage?" element={<Account />} />
             <Route path="/account/:subpage/:action" element={<Account />} />
           </Route>
           <Route path="/agent" element={<AgentLayout />}>
-            <Route index element={<AgentLogin />} />
+            <Route index element={<AgentProfile />} />
             <Route path="/agent/login" element={<AgentLogin />} />
             <Route path="/agent/register" element={<AgentRegister />} />
             <Route path="/agent/profile" element={<AgentProfile />} />

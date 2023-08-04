@@ -9,20 +9,20 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
-    const { setUser } = useContext(UserContext)
+    const { setUser, user } = useContext(UserContext)
     async function handleLogin(ev) {
         ev.preventDefault();
         try {
-            const { data } =await axios.post('/login', { email, password })
+            const { data } = await axios.post('/login', { email, password })
             setUser(data);
-            console.log(data,"data");
+            console.log(data, "data");
             alert('login Success');
             setRedirect(true);
         } catch (e) {
             alert('login failed');
         }
     }
-    if (redirect) {
+    if (user) {
         return <Navigate to={'/'} />
     }
     return (

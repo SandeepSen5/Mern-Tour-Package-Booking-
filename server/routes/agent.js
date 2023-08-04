@@ -29,7 +29,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-
 router.post('/register', agentControllers.agentRegister)
 
 router.post('/login', agentControllers.agentLogin)
@@ -42,7 +41,32 @@ router.post('/uploadbyLink', agentControllers.agentuploadbyLink)
 
 router.post('/upload', upload.array('photos', 5), agentControllers.agentupload);
 
-router.post('/addplaces', agentControllers.agentAddplaces)
+router.post('/addplaces', agentControllers.agentAddplaces)  // add package
+
+router.put('/updateplaces', async (req, res) => {
+    const { token } = req.cookies;
+    const {
+        id, title, address,
+        addedPhotos, description,
+        perks, price, extraInfo, cancelInfo
+    } = req.body;
+
+    console.log(title, id,
+        perks, price)
+    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
+        if (err) throw err;
+        const updatePlaceDoc = {
+            owner: agentData.id,
+            title, address, photos: addedPhotos,
+            description, perks, price, extraInfo, cancelInfo
+        }
+        const PlaceDoc = await Place.findByIdAndUpdate(
+            id, updatePlaceDoc, { new: true }
+        )
+        res.json(PlaceDoc);
+    })
+})
+
 
 router.get('/places', async (req, res) => {
     const { token } = req.cookies;
@@ -54,10 +78,16 @@ router.get('/places', async (req, res) => {
     })
 })
 
+
 router.get('/places/:id', async (req, res) => {
     const { id } = req.params;
     res.json(await Place.findById(id))
 })
+
+
+
+
+
 
 module.exports = router;
 

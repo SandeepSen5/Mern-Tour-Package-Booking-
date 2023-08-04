@@ -6,16 +6,13 @@ const placeSchema = new mongoose.Schema({
         ref: "agent"
     },
     title: String,
-    address:[String],
+    address: [String],
     photos: [String],
     description: [String],
     perks: [String],
+    price: Number,
     extraInfo: [String],
     cancelInfo: [String],
-    category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "category"
-    }
 });
 
 const Place = mongoose.model('place', placeSchema);

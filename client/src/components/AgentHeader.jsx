@@ -16,7 +16,7 @@ export default function Header() {
                     <span className="font-bold text-xl">Lets Go</span>
                 </Link>
                 
-                <Link to={agent ? '/agent/agentaccount' : '/agent/login'} className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4 shadow md shadow-gray-500" >
+                <Link to={agent ? '/agent/profile' : '/agent/login'} className="flex items-center gap-2 border border-gray-300 rounded-full py-2 px-4 shadow md shadow-gray-500" >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>

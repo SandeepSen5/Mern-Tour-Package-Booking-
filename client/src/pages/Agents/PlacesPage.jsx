@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import axios from "axios";
 export default function PlacesPage() {
     const [places, setPlaces] = useState('');
+
     useEffect(() => {
         axios.get('/agent/places').then(({ data }) => {
             console.log(data);
@@ -12,7 +13,6 @@ export default function PlacesPage() {
             console.log(places, "console.log(data);");
         })
     }, [])
-
 
     return (
         <div>
@@ -27,17 +27,14 @@ export default function PlacesPage() {
             <div className="mt-4">
                 {places.length > 0 && places.map((place) => {
                     return (
-                        <Link to={'/agent/places/' + place._id} className=" flex cursor-pointer gap-4 bg-gray-200 p-4 rounded-2xl">
-                            <div className="w-24 h-32 bg-gray-300 grow shrink-0">
-                                <img src={"http://localhost:4000/uploads/" + place.photos[2]} />
+                        <Link to={'/agent/places/' + place._id} className=" flex cursor-pointer gap-4 bg-gray-200 p-4 rounded-2xl mb-3">
+                            <div className=" bg-gray-300 grow shrink-0  object-cover ">
+                                <img className="w-32 h-32 object-cover  rounded-lg" src={"http://localhost:4000/uploads/" + place.photos[0]} />
                             </div>
                             <div className="grow-0 shrink">
-                            <h2 className="text-xl ">{place.title}</h2>
-                            <p className="text-sm ">{place.address}</p>
-                            
+                                <h2 className="text-xl ">{place.title}</h2>
+                                <p className="text-sm ">{place.address}</p>
                             </div>
-
-
                         </Link>
                     )
                 })}

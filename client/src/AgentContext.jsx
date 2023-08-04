@@ -9,7 +9,7 @@ export function AgentContextProvider({ children }) {
     useEffect(() => {
         if (!agent) {
             axios.get('/agent/profile').then(({ data }) => {
-                console.log(data,"agentingo")
+                console.log(data,"agentinfo")
                 setAgent(data);
                 setAgentReady(true);
             })

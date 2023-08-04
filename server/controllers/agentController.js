@@ -96,23 +96,25 @@ exports.agentupload = async (req, res) => {
     return res.json(uploadedFile);
 }
 
-
+ 
 exports.agentAddplaces = async (req, res) => {
     console.log('hai');
     const { token } = req.cookies;
     const { title, address, addedPhotos,
-        description, perks, extraInfo, cancelInfo } = req.body;
-        console.log(req.body)
+        description, perks, price, extraInfo, cancelInfo } = req.body;
+        console.log(title)
     jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
         if (err) throw err;
+        console.log( agentData.id," owner: agentData.id,")
         const PlaceDoc = await Place.create({
             owner: agentData.id,
             title, address,photos:addedPhotos,
-            description, perks, extraInfo, cancelInfo
+            description, perks, price, extraInfo, cancelInfo
         })
+        console.log(PlaceDoc,"jsdjjfjhsdhh")
         res.json(PlaceDoc);
     })
-    
+
 }
 
 

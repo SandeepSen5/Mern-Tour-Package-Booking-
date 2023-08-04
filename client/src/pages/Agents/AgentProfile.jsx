@@ -9,9 +9,10 @@ export default function AccountPage() {
     const [redirect, setRedirect] = useState(null)
     const { agent, setAgent, agentready, setAgentReady } = useContext(AgentContext);
     const { subpage } = useParams();
-    let updatedSubpage = subpage; // Create a new variable to store the updated value
+    
+    let updatedSubpage = subpage; 
     if (updatedSubpage === undefined) {
-        updatedSubpage = 'profile'; // Assign the default value here
+        updatedSubpage = 'profile'; 
     }
     console.log(updatedSubpage,"sub");
 
@@ -37,9 +38,6 @@ export default function AccountPage() {
                     Logged in as {agent.name}<br />
                     <button onClick={logout} className="primary max-w-sm mt-2">Logout</button>
                 </div>
-            )}
-            {updatedSubpage === 'places' && agent && (
-                <PlacesPage />
             )}
         </div>
     );

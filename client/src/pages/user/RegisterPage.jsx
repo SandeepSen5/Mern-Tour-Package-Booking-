@@ -1,8 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { useContext } from "react";
+import { UserContext } from "../../UserContext";
 
 export default function RegisterPage() {
+    const {user} = useContext(UserContext)
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [number, setNumber] = useState('');
@@ -19,6 +22,9 @@ export default function RegisterPage() {
         catch {
             alert('Registration already done');
         }
+    }
+    if (user) {
+        return <Navigate to={'/'} />
     }
     return (
         <div className="mt-4 grow flex items-center justify-around ">
