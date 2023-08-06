@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Perks from "../../components/Perks";
-import AgentNav from "../../components/AgentNav";
+import Perks from "../../components/Agent/Perks";
+import AgentNav from "../../components/Agent/AgentNav";
 import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
 import { useEffect } from "react";

@@ -1,11 +1,14 @@
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Button from '@mui/material/Button';
+
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import axios from "axios";
 import { useContext } from "react";
-import { AgentContext } from "../../stores/AgentContext";
+import { AdminContext } from "../../stores/AdminContext";
+
 
 const userSchema = yup.object().shape({
     email: yup.string().email("Invalid email format").required("Email is required").trim(),
@@ -26,7 +29,7 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirect, setRedirect] = useState(false);
-    const { setAgent, agent } = useContext(AgentContext)
+    const { setAdmin, admin } = useContext(AdminContext)
     const [errors, setErrors] = useState({});
 
     const notify = (error) => toast.info(error, {
@@ -39,14 +42,15 @@ export default function LoginPage() {
         progress: undefined,
         theme: "colored",
     });
+
     async function handleLogin(ev) {
         ev.preventDefault();
         try {
             await userSchema.validate({ email, password }, { abortEarly: false });
-            const { data } = await axios.post('/agent/login', { email, password })
-            setAgent(data);
-            console.log(data, "data");
-            notify('Login Successful');
+            const { data } = await axios.post('/admin/login', { email, password })
+            console.log(data, "adminnnnnnnnnnnnnnnnnnnn")
+            setAdmin(data);
+            notify("Login Success")
             setRedirect(true);
         } catch (error) {
             if (error instanceof yup.ValidationError) {
@@ -56,18 +60,19 @@ export default function LoginPage() {
                 });
                 setErrors(newErrors);
             } else {
-                notify('Enter valid credentials');
+                notify("Enter Valid Credential")
             }
         }
     }
-    if (agent) {
-        return <Navigate to={'/agent/profile'} />
+
+    if (admin) {
+        return <Navigate to={'/admin'} />
     }
 
     return (
-        <div className=" grow flex items-center  justify-around ">
-            <div className="-mt-20">
-                <h1 className="text-4xl text-center mb-4">Login</h1>
+        <div className="mt-20 grow flex items-center justify-around ">
+            <div className="mt-20">
+                <h1 className="text-4xl text-center mb-4"> #Admin Login</h1>
                 <form className="max-w-md mx-auto" onSubmit={handleLogin}>
                     <input type="email" placeholder="Email"
                         value={email}
@@ -82,10 +87,6 @@ export default function LoginPage() {
                         }} />
                     {errors.password && <div className="text-red-500">{errors.password}</div>}
                     <button className="primary">Login</button>
-                    <div className="text-center py-2 text-gray-500">
-                        Don't have an Account?
-                        <Link className=" text-black" to={'/agent/register'}>Register Now</Link>
-                    </div>
                     <ToastContainer />
                 </form>
             </div>

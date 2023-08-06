@@ -10,22 +10,30 @@ const jwtSecret = 'nhdhdslalsjdbfhlaskhdfbfb';
 router.post('/register', async (req, res) => {
     const { name, email, number, password } = req.body;
     try {
-        const UserDoc = await User.create({
+        // Check if the user already exists in the database
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            throw new Error('User already registered');
+        }
+        const newUser = await User.create({
             name,
             email,
             number,
             password: bcrypt.hashSync(password, bcryptSalt)
-        })
-        res.json(UserDoc);
+        });
+
+        res.json(newUser);
     } catch (e) {
-        res.status(422).json(e)
+        res.status(422).json({ error: e.message }); // Send the error message in the response
     }
-})
+});
+
 
 module.exports = router;
 
 
 router.post('/login', async (req, res) => {
+    console.log('hai')
     const { email, password } = req.body;
     const UserDoc = await User.findOne({ email })
     if (UserDoc) {
@@ -41,19 +49,18 @@ router.post('/login', async (req, res) => {
         }
     }
     else {
-        res.json('not found');
+        res.status(422).json('not found');
     }
 })
 
 router.get('/profile', async (req, res) => {
-    console.log('hai')
     const { Usertoken } = req.cookies;
     if (Usertoken) {
         jwt.verify(Usertoken, jwtSecret, {}, async (err, userData) => {
             if (err) throw err;
             console.log(userData, 'userDataaaa');
-            const { name, email, _id } = await User.findById(userData.id)
-            res.json({ name, email, _id })
+            const { name, email, _id, status } = await User.findById(userData.id)
+            res.json({ name, email, _id, status })
         })
     }
     else {
@@ -68,6 +75,8 @@ router.get('/places', async (req, res) => {
 })
 
 
-
+router.get('/logout', async (req, res) => {
+    res.cookie('Usertoken', '').json(true);
+})
 
 

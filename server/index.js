@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const jwt= require('jsonwebtoken')
 require('dotenv').config()
 const app = express();
 
 const adminRouter = require('./routes/admin')
 const agentRouter = require('./routes/agent')
 const userRouter = require('./routes/user')
-
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
@@ -27,13 +27,11 @@ app.use(cors({
     origin: 'http://localhost:5173',
 }));
 
-
 mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log('connected')
     })
     .catch(err => console.log(err));
-
 
 app.use('/admin', adminRouter);
 app.use('/agent', agentRouter);

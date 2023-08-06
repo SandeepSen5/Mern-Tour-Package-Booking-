@@ -35,7 +35,7 @@ router.post('/login', agentControllers.agentLogin)
 
 router.get('/profile', agentControllers.agentProfile)
 
-router.post('/logout', agentControllers.agentLogout)
+router.get('/logout', agentControllers.agentLogout)
 
 router.post('/uploadbyLink', agentControllers.agentuploadbyLink)
 
@@ -73,7 +73,7 @@ router.get('/places', async (req, res) => {
     jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
         if (err) throw err;
         const { id } = agentData;
-        const places = await Place.find({ owner: id });
+        const places = await Place.find();
         res.json(places);
     })
 })

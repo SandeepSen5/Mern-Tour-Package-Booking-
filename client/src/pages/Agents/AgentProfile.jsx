@@ -1,9 +1,9 @@
 import { useContext, useState } from "react";
-import { AgentContext } from "../../AgentContext";
+import { AgentContext } from "../../stores/AgentContext";
 import { Navigate, Link, useParams } from "react-router-dom";
 import axios from "axios";
 import PlacesPage from "./PlacesPage";
-import AgentNav from "../../components/AgentNav";
+import AgentNav from "../../components/Agent/AgentNav";
 
 export default function AccountPage() {
     const [redirect, setRedirect] = useState(null)
@@ -17,7 +17,7 @@ export default function AccountPage() {
     console.log(updatedSubpage,"sub");
 
     async function logout() {
-        await axios.post('/agent/logout');
+        await axios.get('/agent/logout');
         setAgent(null);
         setRedirect('/agent/login');
     }
@@ -42,11 +42,6 @@ export default function AccountPage() {
         </div>
     );
 }
-
-
-
-
-
 
 
 

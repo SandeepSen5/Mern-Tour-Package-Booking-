@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
-import UserNav from "../../components/UserNav"
+import UserNav from "../../components/User/UserNav"
 import axios from "axios"
-import Test from "../../components/test";
 export default function IndexPages() {
   const [places, setPlaces] = useState([]);
   useEffect(() => {
@@ -13,7 +12,6 @@ export default function IndexPages() {
 
   return (
     <div>
-      <Test/>
       <UserNav />
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-20 gap-x-6 gap-y-6">
         {places.length > 0 && places.map((place) => (
@@ -23,7 +21,7 @@ export default function IndexPages() {
             </div>
             <h2 className="text-sm font-bold">{place.title}</h2>
             <h3 className="text-sm truncate">{place.address}</h3>
-          <span>  ₹{ place.price}</span>/  person
+            <span>  ₹{place.price}</span>/  person
           </div>
         ))}
       </div>

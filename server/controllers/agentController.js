@@ -12,6 +12,10 @@ const Place = require('../models/place');
 exports.agentRegister = async (req, res) => {
     const { name, email, number, password } = req.body;
     try {
+        const existingAgent = await Agent.findOne({ email });
+        if (existingAgent) {
+            throw new Error('User already registered');
+        }
         const AgentDoc = await Agent.create({
             name,
             email,
@@ -24,7 +28,6 @@ exports.agentRegister = async (req, res) => {
         res.status(422).json(e)
     }
 }
-
 
 exports.agentLogin = async (req, res) => {
     console.log("hai111")
@@ -47,7 +50,7 @@ exports.agentLogin = async (req, res) => {
             res.status(422).json('paass not ok')
         }
     } else {
-        res.json('not found');
+        res.status(422).json('not found');
     }
 }
 

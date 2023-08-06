@@ -1,10 +1,15 @@
-import { Link, useParams } from "react-router-dom"
-import AgentNav from '../../components/AgentNav'
+import { Link, Navigate, useParams } from "react-router-dom"
+import AgentNav from '../../components/Agent/AgentNav'
 import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { AgentContext } from "../../stores/AgentContext";
+
 export default function PlacesPage() {
+
     const [places, setPlaces] = useState('');
+    const {  agent } = useContext(AgentContext)
 
     useEffect(() => {
         axios.get('/agent/places').then(({ data }) => {
@@ -13,6 +18,10 @@ export default function PlacesPage() {
             console.log(places, "console.log(data);");
         })
     }, [])
+
+    if (!agent) {
+        return <Navigate to={'/agent/login'} />
+    }
 
     return (
         <div>
