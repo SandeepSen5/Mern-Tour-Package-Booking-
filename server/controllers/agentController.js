@@ -8,6 +8,7 @@ const path = require('path');
 
 const Agent = require('../models/agent')
 const Place = require('../models/place');
+const Category = require('../models/category')
 
 exports.agentRegister = async (req, res) => {
     const { name, email, number, password } = req.body;
@@ -28,6 +29,7 @@ exports.agentRegister = async (req, res) => {
         res.status(422).json(e)
     }
 }
+
 
 exports.agentLogin = async (req, res) => {
     console.log("hai111")
@@ -54,6 +56,7 @@ exports.agentLogin = async (req, res) => {
     }
 }
 
+
 exports.agentProfile = (req, res) => {
     const { token } = req.cookies;
     if (token) {
@@ -73,6 +76,7 @@ exports.agentProfile = (req, res) => {
 exports.agentLogout = (req, res) => {
     res.cookie('token', '').json(true);
 }
+
 
 exports.agentuploadbyLink = async (req, res) => {
     const { Link } = req.body;
@@ -99,25 +103,75 @@ exports.agentupload = async (req, res) => {
     return res.json(uploadedFile);
 }
 
- 
+
 exports.agentAddplaces = async (req, res) => {
     console.log('hai');
     const { token } = req.cookies;
     const { title, address, addedPhotos,
-        description, perks, price, extraInfo, cancelInfo } = req.body;
-        console.log(title)
+        description, perks, category, price, extraInfo, cancelInfo } = req.body;
+    console.log(category);
     jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
         if (err) throw err;
-        console.log( agentData.id," owner: agentData.id,")
+        console.log(agentData.id, " owner: agentData.id,")
         const PlaceDoc = await Place.create({
             owner: agentData.id,
-            title, address,photos:addedPhotos,
-            description, perks, price, extraInfo, cancelInfo
+            title, address, photos: addedPhotos,
+            description, perks, category, price, extraInfo, cancelInfo
         })
-        console.log(PlaceDoc,"jsdjjfjhsdhh")
+        console.log(PlaceDoc, "jsdjjfjhsdhh")
         res.json(PlaceDoc);
     })
+}
 
+
+exports.updatePlace = async (req, res) => {
+    const { token } = req.cookies;
+    const {
+        id, title, address,
+        addedPhotos, description,
+        perks, category, price, extraInfo, cancelInfo
+    } = req.body;
+    console.log(title, category, id,
+        perks, price)
+    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
+        if (err) throw err;
+        const updatePlaceDoc = {
+            owner: agentData.id,
+            title, address, photos: addedPhotos,
+            description, perks, category, price, extraInfo, cancelInfo
+        }
+        const PlaceDoc = await Place.findByIdAndUpdate(
+            id, updatePlaceDoc, { new: true }
+        )
+        res.json(PlaceDoc);
+    })
+}
+
+
+exports.allPlaces = async (req, res) => {
+    const { token } = req.cookies;
+    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
+        if (err) throw err;
+        const places = await Place.find();
+        res.json(places);
+    })
+}
+
+
+exports.singlePlace = async (req, res) => {
+    const { id } = req.params;
+    res.json(await Place.findById(id))
+}
+
+
+exports.allCategory = async (req, res) => {
+    try {
+        const catDoc = await Category.find()
+        res.status(200).json(catDoc);
+    }
+    catch (err) {
+        console.log(err)
+    }
 }
 
 

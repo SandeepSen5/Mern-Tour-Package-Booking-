@@ -20,7 +20,14 @@ import AdminLayout from "./components/Admin/AdminLayout";
 import AdminUser from "./pages/Admin/UserManagement/AdminUser";
 import AdminLogin from "./pages/Admin/AdminLogin"
 import AdminAgent from "./pages/Admin/AgentManagement/AdminAgent"
-
+import SinglePackage from "./pages/user/SinglePackage";
+import Payments from "./pages/user/Payment";
+import Success from "./pages/user/Success";
+import CategoryPage from "./pages/Admin/CategoryPage";
+import CategoryList from "./pages/Admin/CategoryList";
+import BookingList from "./pages/user/BookingsList";
+import AdminBooking from "./pages/Admin/Booking Management/AdminBooking";
+import AdminPackage from "./pages/Admin/PackageManagement/AdminPackage";
 axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.withCredentials = true;
 
@@ -35,9 +42,12 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/profile" element={<Account />} />
-              <Route path="/bookings" element={<Account />} />
               <Route path="/favourites" element={<Account />} />
               <Route path="/contact" element={<Account />} />
+              <Route path="/package/:id" element={<SinglePackage />} />
+              <Route path="/payment/:id" element={<Payments />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/bookings" element={<BookingList />} />
               <Route path="/account/:subpage?" element={<Account />} />
               <Route path="/account/:subpage/:action" element={<Account />} />
             </Route>
@@ -56,6 +66,11 @@ function App() {
               <Route path='/admin' element={<AdminHome />} />
               <Route path='/admin/user' element={<AdminUser />} />
               <Route path='/admin/agent' element={<AdminAgent />} />
+              <Route path='/admin/category' element={<CategoryPage />} />
+              <Route path='/admin/category/new' element={<CategoryList />} />
+              <Route path='/admin/category/:id' element={<CategoryList />} />
+              <Route path='/admin/packages' element={<AdminPackage />} />
+              <Route path='/admin/bookings' element={<AdminBooking />} />
             </Route>
           </Routes>
         </AdminContextProvider>

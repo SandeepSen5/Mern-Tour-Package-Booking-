@@ -2,13 +2,13 @@ import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from '@mui/material/Button';
-
+import { useSelector, useDispatch } from 'react-redux';
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
 import axios from "axios";
-import { useContext } from "react";
-import { AdminContext } from "../../stores/AdminContext";
-
+import { useEffect } from 'react';
+import { register, reset } from '../../redux/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+import Spinner from '../../components/Admin/spinner';
 
 const userSchema = yup.object().shape({
     email: yup.string().email("Invalid email format").required("Email is required").trim(),
@@ -28,9 +28,24 @@ export default function LoginPage() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [redirect, setRedirect] = useState(false);
-    const { setAdmin, admin } = useContext(AdminContext)
     const [errors, setErrors] = useState({});
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const { admin, adminisLoading, adminisError, adminisSuccess, adminmessage } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        if (adminisError) {
+            toast.error(adminmessage)
+            dispatch(reset());
+        }
+
+        if (admin) {
+            navigate('/admin')
+        }
+
+    }, [admin, adminisError, adminisSuccess, adminmessage, navigate, dispatch])
 
     const notify = (error) => toast.info(error, {
         position: "top-right",
@@ -43,15 +58,18 @@ export default function LoginPage() {
         theme: "colored",
     });
 
+    if (adminisLoading) {
+        return <Spinner />
+    }
+
     async function handleLogin(ev) {
         ev.preventDefault();
         try {
             await userSchema.validate({ email, password }, { abortEarly: false });
-            const { data } = await axios.post('/admin/login', { email, password })
-            console.log(data, "adminnnnnnnnnnnnnnnnnnnn")
-            setAdmin(data);
-            notify("Login Success")
-            setRedirect(true);
+            const adminData = { email, password }
+            dispatch(register(adminData))
+            
+            
         } catch (error) {
             if (error instanceof yup.ValidationError) {
                 const newErrors = {};
@@ -65,9 +83,7 @@ export default function LoginPage() {
         }
     }
 
-    if (admin) {
-        return <Navigate to={'/admin'} />
-    }
+
 
     return (
         <div className="mt-20 grow flex items-center justify-around ">

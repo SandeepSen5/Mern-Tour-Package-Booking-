@@ -23,6 +23,18 @@ export const menu = [
             },
             {
                 id: 4,
+                title: "Category",
+                url: "/admin/category",
+                icon: "product.svg",
+            },
+            {
+                id: 5,
+                title: "Package",
+                url: "/admin/packages",
+                icon: "product.svg",
+            },
+            {
+                id: 6,
                 title: "Bookings",
                 url: "/admin/bookings",
                 icon: "product.svg",

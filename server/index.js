@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
-const jwt= require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const app = express();
 
@@ -37,7 +37,12 @@ app.use('/admin', adminRouter);
 app.use('/agent', agentRouter);
 app.use('/', userRouter);
 
+app.use((err, req, res, next) => {
+    const errorStatus = err.status || 500; 
+    const errorMessage = err.message || "Something went wrong!";
 
+    return res.status(errorStatus).send(errorMessage);
+})
 
 
 app.listen(4000, console.log('running'));

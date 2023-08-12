@@ -27,8 +27,6 @@ export default function AccountPage() {
         return <Navigate to={'/login'} />
     }
 
-
-
     if (redirect) {
         return <Navigate to={redirect} />
     }

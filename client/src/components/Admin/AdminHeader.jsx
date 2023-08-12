@@ -3,15 +3,19 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { AdminContext } from "../../stores/AdminContext"
-import { useContext } from "react"
 import axios from "axios";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
+import { logout, reset } from '../../redux/slices/authSlice';
 
 function AdminHeader() {
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const { admin, setAdmin } = useContext(AdminContext)
     const open = Boolean(anchorEl);
+    const { admin } = useSelector((state) => state.auth);
+
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -21,13 +25,15 @@ function AdminHeader() {
         setAnchorEl(null);
     };
 
-    async function logout() {
-        axios.get('/admin/logout').then((response) => {
-            console.log("hello");
-            setAdmin(null);
-        })
+    async function logoff() {
+        dispatch(logout());
+        dispatch(reset())
+        dispatch(reset());
+        navigate('/admin/login')
     }
-   
+
+
+
     return (
         <div className="navbar">
             <div className="logo">
@@ -41,7 +47,7 @@ function AdminHeader() {
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                     </svg>
-                    <span>Hi Admin</span>
+                    <span>Hi {admin && (admin.name)} </span>
                 </div>
                 <div>
                     <Button
@@ -65,7 +71,7 @@ function AdminHeader() {
                         }}
                     >
                         <MenuItem onClick={handleClose} >
-                            <MenuItem onClick={logout}><Link to={'/admin/login'}>
+                            <MenuItem onClick={logoff}><Link to={'/admin/login'}>
                                 {/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
                                 </svg> */}

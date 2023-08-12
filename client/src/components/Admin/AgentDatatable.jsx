@@ -6,7 +6,7 @@ import axios from "axios";
 
 export default function AgentDatatables({ rows }) {
 
-    const Blockagent = (email) => {
+    const blockagent = (email) => {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -14,7 +14,7 @@ export default function AgentDatatables({ rows }) {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, UnBlock!'
+            confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.patch('/admin/blockagent', { email })
@@ -39,7 +39,7 @@ export default function AgentDatatables({ rows }) {
         
     };
 
-    const UnBlockagent = (email) => {
+    const unBlockagent = (email) => {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -108,14 +108,14 @@ export default function AgentDatatables({ rows }) {
                 console.log(params.row.email, "asdasdasda");
                 return <div className="action flex gap-1">
                     < div className="view " >
-                        <button onClick={(ev) => { Blockagent(params.row.email)  }} className=" rounded-full" >
+                        <button onClick={(ev) => { blockagent(params.row.email)  }} className=" rounded-full" >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </button>
                     </div >
                     <div className="view ">
-                        <button onClick={(ev) => { UnBlockagent(params.row.email) }} className=" rounded-2xl " >
+                        <button onClick={(ev) => { unBlockagent(params.row.email) }} className=" rounded-2xl " >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>

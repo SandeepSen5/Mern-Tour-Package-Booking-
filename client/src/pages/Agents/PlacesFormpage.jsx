@@ -16,9 +16,17 @@ export default function PlacesFormpage() {
     const [price, setPrice] = useState(0);
     const [extraInfo, setExtraInfo] = useState('');
     const [cancelInfo, setCancelInfo,] = useState('');
+    const [category, SetCategory] = useState('');
+    const [allcategory, SetAllcategory] = useState('');
     const [redirect, setRedirect] = useState(false);
 
+
     useEffect(() => {
+
+        axios.get('/agent/allcategory').then((response) => {
+            SetAllcategory(response.data)
+        })
+
         if (!id) {
             return;
         }
@@ -31,10 +39,13 @@ export default function PlacesFormpage() {
             setAddedPhotos(data.photos);
             setDescription(data.description);
             setPerks(data.perks);
+            SetCategory(data.category);
             setPrice(data.price);
             setExtraInfo(data.extraInfo);
             setCancelInfo(data.cancelInfo);
         })
+        console.log("hai");
+
     }, [id])
 
     function InputHeader(text) {
@@ -115,7 +126,7 @@ export default function PlacesFormpage() {
         const placedata = {
             title, address,
             addedPhotos, description,
-            perks,price, extraInfo, cancelInfo
+            perks, category, price, extraInfo, cancelInfo
         }
         if (id) {
             await axios.put('/agent/updateplaces', {
@@ -124,7 +135,7 @@ export default function PlacesFormpage() {
             setRedirect(true)
         }
         else {
-            console.log(title, address,
+            console.log(title, address, category,
                 addedPhotos, description,
                 perks, extraInfo, cancelInfo)
 
@@ -187,6 +198,18 @@ export default function PlacesFormpage() {
                 </div>
                 {preInput('Decription', 'More desciption about the place')}
                 <textarea value={description} onChange={ev => setDescription(ev.target.value)} />
+                {preInput('Category', 'Categorize the package')}
+                <div className="mt-8 mb-10">
+                    {allcategory?.length > 0 &&
+                        <select value={category} onChange={(ev) => SetCategory(ev.target.value)} >
+                            <option value="" disabled>Select a category</option>
+                            {allcategory.map((catgry) => (
+                                <option value={catgry.title} key={catgry._id}>{catgry.title}</option>
+                            )
+                            )}
+                        </select>
+                    }
+                </div>
                 {preInput('Perks', ' add ons')}
                 <Perks selected={perks} onChange={setPerks} />
                 <div className="mt-8 mb-10">
@@ -202,7 +225,7 @@ export default function PlacesFormpage() {
                 </div>
             </form>
         </div>
-    ) 
+    )
 }
 
 

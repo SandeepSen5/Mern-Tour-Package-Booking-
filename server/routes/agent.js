@@ -2,19 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const fs = require('fs');
-
-
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const bcryptSalt = bcrypt.genSaltSync(10);
-const download = require('image-downloader');
-const jwtSecret = 'sakdfnsadklfnasdgsdfgsdgfg';
-
-
-const Agent = require('../models/agent')
-const Place = require('../models/place');
-
 const agentControllers = require('../controllers/agentController');
 
 
@@ -26,6 +14,7 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + Date.now() + ".jpg");
     },
 });
+
 
 const upload = multer({ storage: storage });
 
@@ -43,51 +32,13 @@ router.post('/upload', upload.array('photos', 5), agentControllers.agentupload);
 
 router.post('/addplaces', agentControllers.agentAddplaces)  // add package
 
-router.put('/updateplaces', async (req, res) => {
-    const { token } = req.cookies;
-    const {
-        id, title, address,
-        addedPhotos, description,
-        perks, price, extraInfo, cancelInfo
-    } = req.body;
+router.put('/updateplaces', agentControllers.updatePlace)
 
-    console.log(title, id,
-        perks, price)
-    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
-        if (err) throw err;
-        const updatePlaceDoc = {
-            owner: agentData.id,
-            title, address, photos: addedPhotos,
-            description, perks, price, extraInfo, cancelInfo
-        }
-        const PlaceDoc = await Place.findByIdAndUpdate(
-            id, updatePlaceDoc, { new: true }
-        )
-        res.json(PlaceDoc);
-    })
-})
+router.get('/places', agentControllers.allPlaces)
 
+router.get('/places/:id',agentControllers.singlePlace )
 
-router.get('/places', async (req, res) => {
-    const { token } = req.cookies;
-    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
-        if (err) throw err;
-        const { id } = agentData;
-        const places = await Place.find();
-        res.json(places);
-    })
-})
-
-
-router.get('/places/:id', async (req, res) => {
-    const { id } = req.params;
-    res.json(await Place.findById(id))
-})
-
-
-
-
-
+router.get('/allcategory', agentControllers.allCategory)
 
 module.exports = router;
 

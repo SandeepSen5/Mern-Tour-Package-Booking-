@@ -56,8 +56,9 @@ export default function LoginPage() {
                     newErrors[err.path] = err.message;
                 });
                 setErrors(newErrors);
-            } else { notify('Enter valid credentials');
-               
+            } else {
+                notify(error.response.data);
+
             }
         }
     }

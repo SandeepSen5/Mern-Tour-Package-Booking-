@@ -1,16 +1,21 @@
+import { useEffect } from "react";
 import "./AdminHome.scss";
-import { useContext } from "react";
-import { AdminContext } from "../../../stores/AdminContext";
-import { Navigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+
 
 export default function AdminHome() {
-    const { admin } = useContext(AdminContext)
-    if (!admin) {
-        return <Navigate to={'/admin/login'} />
-    }
+    const navigate = useNavigate();
+    const { admin } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (!admin) {
+            return navigate('/admin/login')
+        }
+    }, [])
+
     return (
         <div className="home">
-          
+            hai
         </div>
     )
 }

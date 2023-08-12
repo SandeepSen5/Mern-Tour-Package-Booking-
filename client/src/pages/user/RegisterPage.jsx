@@ -65,8 +65,7 @@ export default function RegisterPage() {
                 });
                 setErrors(newErrors);
             } else {
-                console.log(error)
-                notify('Already Registered');
+                notify(error.response.data);
             }
         }
     }

@@ -15,7 +15,7 @@ export default function Datatables({ rows }) {
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, UnBlock!'
+            confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.patch('/admin/blockuser', { email })
