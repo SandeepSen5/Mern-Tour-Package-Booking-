@@ -18,8 +18,6 @@ const upload = multer({ storage: storage });
 
 router.post('/login', adminControllers.adminLogin)
 
-router.get('/profile', adminControllers.adminProfile)
-
 router.get('/users', adminControllers.allUsers)
 
 router.patch('/blockuser', adminControllers.blockUser)
@@ -46,9 +44,9 @@ router.patch('/blockcategory', adminControllers.blockCategory)
 
 router.patch('/unblockcategory', adminControllers.unblockCategory)
 
-router.get('/categoryid',adminControllers.categoryId)
+router.get('/categoryid', adminControllers.categoryId)
 
-router.get('/categoryeditid',adminControllers.categoryEditid)
+router.get('/categoryeditid', adminControllers.categoryEditid)
 
 router.get('/allpackages', adminControllers.allPackages);
 
@@ -56,6 +54,15 @@ router.patch('/blockpackage', adminControllers.blockPackage)
 
 router.patch('/unblockpackage', adminControllers.unblockPackage);
 
-router.get('/allorders',adminControllers.allOrders)
+router.get('/allorders', adminControllers.allOrders)
+
+router.patch('/bookingStatus', adminControllers.bookingStatus)
+
+router.get('/allreviews', adminControllers.getAllreviews)
+
+router.patch('/blockreview', adminControllers.blockReview)
+
+router.patch('/unblockreview', adminControllers.unblockReview)
+
 
 module.exports = router;

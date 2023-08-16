@@ -3,7 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Swal from 'sweetalert2';
 import axios from "axios";
 
-export default function PackageDatatables({ rows }) {
+export default function PackageDatatables({ rows, setUpdate }) {
 
     const blockPackage = (title) => {
         Swal.fire({
@@ -23,7 +23,7 @@ export default function PackageDatatables({ rows }) {
                             'Agent has been Blocked.',
                             'success'
                         )
-                        location.reload();
+                        setUpdate((prev) => !prev);
                     })
                     .catch((error) => {
                         Swal.fire(
@@ -47,14 +47,14 @@ export default function PackageDatatables({ rows }) {
             confirmButtonText: 'Yes, UnBlock!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/unblockpackage', {title })
+                axios.patch('/admin/unblockpackage', { title })
                     .then((response) => {
                         Swal.fire(
                             'UnBlocked!',
                             'Agent has been UnBlocked.',
                             'success'
                         )
-                        location.reload();
+                        setUpdate((prev) => !prev);
                     })
                     .catch((error) => {
                         Swal.fire(
@@ -117,11 +117,11 @@ export default function PackageDatatables({ rows }) {
         }
     ];
 
-
     return (
         <div style={{ height: 400, width: '100%' }}>
             <DataGrid
                 rows={rows}
+                disableRowSelectionOnClick
                 columns={columns}
                 initialState={{
                     pagination: {

@@ -39,6 +39,12 @@ export const menu = [
                 url: "/admin/bookings",
                 icon: "product.svg",
             },
+            {
+                id: 7,
+                title: "Review",
+                url: "/admin/review",
+                icon: "product.svg",
+            },
         ],
     },
 ];

@@ -4,10 +4,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import Button from '@mui/material/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from "react";
-import axios from "axios";
 import { useEffect } from 'react';
 import { register, reset } from '../../redux/slices/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Spinner from '../../components/Admin/spinner';
 
 const userSchema = yup.object().shape({
@@ -29,23 +28,22 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
+    const [redirect, setRedirect] = useState(null);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { admin, adminisLoading, adminisError, adminisSuccess, adminmessage } = useSelector((state) => state.auth);
+    const { admin} = useSelector((state) => state.auth);
 
     useEffect(() => {
-        if (adminisError) {
-            toast.error(adminmessage)
-            dispatch(reset());
-        }
-
         if (admin) {
-            navigate('/admin')
+            setRedirect('/admin');
         }
+    }, [admin]);
 
-    }, [admin, adminisError, adminisSuccess, adminmessage, navigate, dispatch])
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     const notify = (error) => toast.info(error, {
         position: "top-right",
@@ -58,19 +56,15 @@ export default function LoginPage() {
         theme: "colored",
     });
 
-    if (adminisLoading) {
-        return <Spinner />
-    }
 
     async function handleLogin(ev) {
         ev.preventDefault();
         try {
             await userSchema.validate({ email, password }, { abortEarly: false });
             const adminData = { email, password }
-            dispatch(register(adminData))
-            
-            
+            dispatch(register(adminData));
         } catch (error) {
+            console.log(error)
             if (error instanceof yup.ValidationError) {
                 const newErrors = {};
                 error.inner.forEach(err => {
@@ -78,12 +72,10 @@ export default function LoginPage() {
                 });
                 setErrors(newErrors);
             } else {
-                notify("Enter Valid Credential")
+                notify(error.response.data);
             }
         }
     }
-
-
 
     return (
         <div className="mt-20 grow flex items-center justify-around ">

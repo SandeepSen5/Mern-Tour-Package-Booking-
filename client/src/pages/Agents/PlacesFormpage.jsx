@@ -1,12 +1,13 @@
 import { useState } from "react";
 import Perks from "../../components/Agent/Perks";
 import AgentNav from "../../components/Agent/AgentNav";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 export default function PlacesFormpage() {
     const { id } = useParams()
-    console.log(id, "idddddddddddddddddddddddddddddddddd");
+    const [redirectlogin, setRedirectlogin] = useState(null);
     const [title, setTitle] = useState('');
     const [address, setAddress] = useState('');
     const [addedPhotos, setAddedPhotos] = useState([]);
@@ -19,9 +20,13 @@ export default function PlacesFormpage() {
     const [category, SetCategory] = useState('');
     const [allcategory, SetAllcategory] = useState('');
     const [redirect, setRedirect] = useState(false);
-
+    const { agent } = useSelector((state) => state.agent);
 
     useEffect(() => {
+
+        if (!agent) {
+            setRedirectlogin('/agent/login');
+        }
 
         axios.get('/agent/allcategory').then((response) => {
             SetAllcategory(response.data)
@@ -30,10 +35,9 @@ export default function PlacesFormpage() {
         if (!id) {
             return;
         }
+
         axios.get('/agent/places/' + id).then((response) => {
             const { data } = response;
-            console.log(data.title, "jjjjjjjjjjjjjjjjjjjjjjjjjjjj")
-            console.log(data.photos, "ttttttttttttttttttttjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
             setTitle(data.title);
             setAddress(data.address);
             setAddedPhotos(data.photos);
@@ -47,6 +51,10 @@ export default function PlacesFormpage() {
         console.log("hai");
 
     }, [id])
+
+    if (redirectlogin) {
+        return <Navigate to={redirectlogin} />;
+    }
 
     function InputHeader(text) {
         return (
@@ -79,8 +87,6 @@ export default function PlacesFormpage() {
         setPhotosLink('');
     }
 
-
-    console.log(addedPhotos, "addedphoto")
     function uploadPhoto(ev) {
         const files = ev.target.files;
         const data = new FormData();

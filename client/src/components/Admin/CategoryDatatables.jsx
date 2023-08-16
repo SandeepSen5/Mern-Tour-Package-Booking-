@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
-export default function CategoryDatatables({ rows }) {
+export default function CategoryDatatables({ rows, setUpdate }) {
 
     const navigate = useNavigate();
     const blockcategory = (title) => {
@@ -25,7 +25,7 @@ export default function CategoryDatatables({ rows }) {
                             'Agent has been Blocked.',
                             'success'
                         )
-                        location.reload();
+                        setUpdate((prev) => !prev);
                     })
                     .catch((error) => {
                         Swal.fire(
@@ -34,10 +34,8 @@ export default function CategoryDatatables({ rows }) {
                             'error'
                         )
                     });
-
             }
         })
-
     };
 
     const unBlockcategory = (title) => {
@@ -58,7 +56,7 @@ export default function CategoryDatatables({ rows }) {
                             'Agent has been UnBlocked.',
                             'success'
                         )
-                        location.reload();
+                        setUpdate((prev) => !prev);
                     })
                     .catch((error) => {
                         Swal.fire(
@@ -74,7 +72,6 @@ export default function CategoryDatatables({ rows }) {
 
     const editcategory = async (title) => {
         console.log(title);
-       
         await axios.get(`/admin/categoryid?title=${encodeURIComponent(title)}`)
             .then((response) => {
                 console.log(response.data);

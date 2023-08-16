@@ -5,17 +5,19 @@ const bcryptSalt = bcrypt.genSaltSync(10);
 const download = require('image-downloader');
 const jwtSecret = 'sakdfnsadklfnasdgsdfgsdgfg';
 const path = require('path');
-
-const Agent = require('../models/agent')
+const createError = require('../utils/createError');
+const Agent = require('../models/agent');
 const Place = require('../models/place');
-const Category = require('../models/category')
+const Category = require('../models/category');
+const Order = require('../models/order');
+const User = require('../models/user');
 
-exports.agentRegister = async (req, res) => {
-    const { name, email, number, password } = req.body;
+exports.agentRegister = async (req, res, next) => {
     try {
+        const { name, email, number, password } = req.body;
         const existingAgent = await Agent.findOne({ email });
         if (existingAgent) {
-            throw new Error('User already registered');
+            return next(createError(400, "Agent already registered"))
         }
         const AgentDoc = await Agent.create({
             name,
@@ -23,148 +25,156 @@ exports.agentRegister = async (req, res) => {
             number,
             password: bcrypt.hashSync(password, bcryptSalt)
         })
-        res.json(AgentDoc);
+        res.status(200).json(AgentDoc);
     }
-    catch (e) {
-        res.status(422).json(e)
+    catch (err) {
+        next(err);
     }
 }
 
 
-exports.agentLogin = async (req, res) => {
-    console.log("hai111")
-    const { email, password } = req.body;
-    console.log(email)
-    console.log(password)
-    const AgentDoc = await Agent.findOne({ email })
-    console.log(AgentDoc)
-    if (AgentDoc) {
-        const passok = bcrypt.compareSync(password, AgentDoc.password);
-        console.log(passok)
-        if (passok) {
-            jwt.sign({ email: AgentDoc.email, id: AgentDoc._id }, jwtSecret, {}, (err, token) => {
-                if (err) throw err;
-                console.log("done")
-                res.cookie('token', token).json(AgentDoc)
-            })
-            console.log("ok");
-        } else {
-            res.status(422).json('paass not ok')
+exports.agentLogin = async (req, res, next) => {
+    try {
+        const { email, password } = req.body;
+        const AgentDoc = await Agent.findOne({ email });
+        if (!AgentDoc.status) {
+            return next(createError(400, "Agent Blocked"))
         }
-    } else {
-        res.status(422).json('not found');
+        if (AgentDoc) {
+            const passok = bcrypt.compareSync(password, AgentDoc.password);
+            if (passok) {
+                jwt.sign({ email: AgentDoc.email, id: AgentDoc._id }, jwtSecret, {}, (err, token) => {
+                    if (err) throw err;
+                    res.cookie('token', token).json(AgentDoc);
+                })
+            } else {
+                return next(createError(400, "Incorrect Password"))
+            }
+        } else {
+            return next(createError(404, "Agent Not Registered"))
+        }
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+exports.agentLogout = (req, res, next) => {
+    try {
+        res.cookie('token', '').json(true);
+    }
+    catch (err) {
+        next(err);
+    }
+
+}
+
+
+exports.agentuploadbyLink = async (req, res, next) => {
+    try {
+        const { Link } = req.body;
+        const newName = 'photo' + Date.now() + '.jpg';
+        const uploadsDir = path.resolve(__dirname, "../public/uploads", newName);
+        await download.image({
+            url: Link,
+            dest: uploadsDir,
+        }).then(({ filename }) => {
+            console.log('Saved to', filename);
+        }).catch((err) => console.error(err));
+        res.status(200).json(newName)
+    }
+    catch (err) {
+        next(err);
     }
 }
 
 
-exports.agentProfile = (req, res) => {
-    const { token } = req.cookies;
-    if (token) {
+exports.agentupload = async (req, res, next) => {
+    try {
+        const uploadedFile = [];
+        for (let i = 0; i < req.files.length; i++) {
+            const { filename } = req.files[i];
+            uploadedFile.push(filename)
+        }
+        return res.json(uploadedFile);
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+
+exports.agentAddplaces = async (req, res, next) => {
+    try {
+        const { token } = req.cookies;
+        const { title, address, addedPhotos,
+            description, perks, category, price, extraInfo, cancelInfo } = req.body;
         jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
             if (err) throw err;
-            console.log(agentData, 'aaa');
-            const { name, email, _id } = await Agent.findById(agentData.id)
-            res.json({ name, email, _id })
+            const PlaceDoc = await Place.create({
+                owner: agentData.id,
+                title, address, photos: addedPhotos,
+                description, perks, category, price, extraInfo, cancelInfo
+            })
+            res.status(200).json(PlaceDoc);
         })
     }
-    else {
-        res.json(null)
+    catch (err) {
+        next(err);
     }
 }
 
 
-exports.agentLogout = (req, res) => {
-    res.cookie('token', '').json(true);
-}
-
-
-exports.agentuploadbyLink = async (req, res) => {
-    const { Link } = req.body;
-    const newName = 'photo' + Date.now() + '.jpg';
-    const uploadsDir = path.resolve(__dirname, "../public/uploads", newName);
-    await download.image({
-        url: Link,
-        dest: uploadsDir,
-    }).then(({ filename }) => {
-        console.log('Saved to', filename);
-    }).catch((err) => console.error(err));
-    res.json(newName)
-}
-
-
-exports.agentupload = async (req, res) => {
-    const uploadedFile = [];
-    console.log(req.files); // Here, you should see the uploaded files in the console
-    for (let i = 0; i < req.files.length; i++) {
-        const { filename } = req.files[i];
-        uploadedFile.push(filename)
-    }
-    console.log(uploadedFile);
-    return res.json(uploadedFile);
-}
-
-
-exports.agentAddplaces = async (req, res) => {
-    console.log('hai');
-    const { token } = req.cookies;
-    const { title, address, addedPhotos,
-        description, perks, category, price, extraInfo, cancelInfo } = req.body;
-    console.log(category);
-    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
-        if (err) throw err;
-        console.log(agentData.id, " owner: agentData.id,")
-        const PlaceDoc = await Place.create({
-            owner: agentData.id,
-            title, address, photos: addedPhotos,
-            description, perks, category, price, extraInfo, cancelInfo
+exports.updatePlace = async (req, res, next) => {
+    try {
+        const { token } = req.cookies;
+        const {
+            id, title, address,
+            addedPhotos, description,
+            perks, category, price, extraInfo, cancelInfo
+        } = req.body;
+        jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
+            if (err) throw err;
+            const updatePlaceDoc = {
+                owner: agentData.id,
+                title, address, photos: addedPhotos,
+                description, perks, category, price, extraInfo, cancelInfo
+            }
+            const PlaceDoc = await Place.findByIdAndUpdate(
+                id, updatePlaceDoc, { new: true }
+            )
+            res.status(200).json(PlaceDoc);
         })
-        console.log(PlaceDoc, "jsdjjfjhsdhh")
-        res.json(PlaceDoc);
-    })
+    }
+    catch (err) {
+        next(err);
+    }
 }
 
 
-exports.updatePlace = async (req, res) => {
-    const { token } = req.cookies;
-    const {
-        id, title, address,
-        addedPhotos, description,
-        perks, category, price, extraInfo, cancelInfo
-    } = req.body;
-    console.log(title, category, id,
-        perks, price)
-    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
-        if (err) throw err;
-        const updatePlaceDoc = {
-            owner: agentData.id,
-            title, address, photos: addedPhotos,
-            description, perks, category, price, extraInfo, cancelInfo
-        }
-        const PlaceDoc = await Place.findByIdAndUpdate(
-            id, updatePlaceDoc, { new: true }
-        )
-        res.json(PlaceDoc);
-    })
-}
-
-
-exports.allPlaces = async (req, res) => {
-    const { token } = req.cookies;
-    jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
-        if (err) throw err;
+exports.allPlaces = async (req, res, next) => {
+    try {
         const places = await Place.find();
         res.json(places);
-    })
+    }
+    catch (err) {
+        next(err);
+    }
 }
 
 
-exports.singlePlace = async (req, res) => {
-    const { id } = req.params;
-    res.json(await Place.findById(id))
+exports.singlePlace = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        res.json(await Place.findById(id))
+    }
+    catch (err) {
+        next(err);
+    }
 }
 
 
-exports.allCategory = async (req, res) => {
+exports.allCategory = async (req, res, next) => {
     try {
         const catDoc = await Category.find()
         res.status(200).json(catDoc);
@@ -175,7 +185,18 @@ exports.allCategory = async (req, res) => {
 }
 
 
-
+exports.allBookings = async (req, res) => {
+    try {
+        const allBookings = await Order.find().populate({
+            path: 'place',
+            model: 'Place',
+        });
+        res.status(200).json(allBookings);
+    }
+    catch (err) {
+        next(err)
+    }
+}
 
 
 

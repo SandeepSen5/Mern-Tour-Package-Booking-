@@ -3,7 +3,6 @@ import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from 'react-redux';
 import { logout, reset } from '../../redux/slices/authSlice';
@@ -16,7 +15,6 @@ function AdminHeader() {
     const open = Boolean(anchorEl);
     const { admin } = useSelector((state) => state.auth);
 
-
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -28,11 +26,8 @@ function AdminHeader() {
     async function logoff() {
         dispatch(logout());
         dispatch(reset())
-        dispatch(reset());
         navigate('/admin/login')
     }
-
-
 
     return (
         <div className="navbar">

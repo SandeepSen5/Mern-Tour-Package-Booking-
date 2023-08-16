@@ -2,13 +2,21 @@ import { useState } from 'react';
 import CategoryDatatables from '../../components/Admin/CategoryDatatables';
 import axios from "axios";
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function CategoryPage() {
-    const [category, setCategory] = useState('')
+
+    const [category, setCategory] = useState('');
+    const [redirect, setRedirect] = useState(null);
+    const { admin } = useSelector((state) => state.auth)
+    const [update, setUpdate] = useState(false);
 
     useEffect(() => {
+        if (!admin) {
+            setRedirect('/admin/login');
+        }
+
         axios.get('/admin/getcategory').then(({ data }) => {
             const formattedCategory = data.map((category, index) => ({
                 id: index + 1,
@@ -19,8 +27,14 @@ export default function CategoryPage() {
             }));
             setCategory(formattedCategory);
         });
-    }, []);
+    }, [update]);
     console.log(category)
+
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
+
     return (
         <div>
             <div className="flex justify-end ">
@@ -29,7 +43,7 @@ export default function CategoryPage() {
                 </Link>
             </div>
             <h1 className='text-xl mb-2 '> Category Management</h1>
-            <CategoryDatatables rows={category} />
+            <CategoryDatatables rows={category} setUpdate={setUpdate} />
         </div>
     )
 }

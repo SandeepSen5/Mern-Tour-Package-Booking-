@@ -6,7 +6,7 @@ const UserSchema = new Schema({
     email: { type: String, unique: true },
     number: Number,
     password: String,
-    status: { type: Boolean, default: true }, // Add the status field with default value true
+    status: { type: Boolean, default: true }, 
 });
 
 const UserModel = mongoose.model('User', UserSchema);

@@ -4,7 +4,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Swal from 'sweetalert2'
 import axios from "axios";
 
-export default function AgentDatatables({ rows }) {
+export default function AgentDatatables({ rows, setUpdate }) {
 
     const blockagent = (email) => {
         Swal.fire({
@@ -18,25 +18,25 @@ export default function AgentDatatables({ rows }) {
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.patch('/admin/blockagent', { email })
-                .then((response) => {
-                    Swal.fire(
-                        'Blocked!',
-                        'Agent has been Blocked.',
-                        'success'
-                    )
-                    location.reload();
-                })
-                .catch((error) => {
-                    Swal.fire(
-                        'Failed!',
-                        'Agent not Blocked.',
-                        'error'
-                    )
-                });
-               
+                    .then((response) => {
+                        Swal.fire(
+                            'Blocked!',
+                            'Agent has been Blocked.',
+                            'success'
+                        )
+                        setUpdate((prev) => !prev);
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            'Failed!',
+                            'Agent not Blocked.',
+                            'error'
+                        )
+                    });
+
             }
         })
-        
+
     };
 
     const unBlockagent = (email) => {
@@ -51,25 +51,25 @@ export default function AgentDatatables({ rows }) {
         }).then((result) => {
             if (result.isConfirmed) {
                 axios.patch('/admin/unblockagent', { email })
-                .then((response) => {
-                    Swal.fire(
-                        'UnBlocked!',
-                        'Agent has been UnBlocked.',
-                        'success'
-                    )
-                    location.reload();
-                })
-                .catch((error) => {
-                    Swal.fire(
-                        'Failed!',
-                        'Agent not UnBloced.',
-                        'error'
-                    )
-                });
-               
+                    .then((response) => {
+                        Swal.fire(
+                            'UnBlocked!',
+                            'Agent has been UnBlocked.',
+                            'success'
+                        )
+                        setUpdate((prev) => !prev);
+                    })
+                    .catch((error) => {
+                        Swal.fire(
+                            'Failed!',
+                            'Agent not UnBloced.',
+                            'error'
+                        )
+                    });
+
             }
         })
-    
+
     };
 
     console.log(rows, "haiiiiiii")
@@ -108,7 +108,7 @@ export default function AgentDatatables({ rows }) {
                 console.log(params.row.email, "asdasdasda");
                 return <div className="action flex gap-1">
                     < div className="view " >
-                        <button onClick={(ev) => { blockagent(params.row.email)  }} className=" rounded-full" >
+                        <button onClick={(ev) => { blockagent(params.row.email) }} className=" rounded-full" >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>

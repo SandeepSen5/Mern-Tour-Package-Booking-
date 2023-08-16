@@ -1,17 +1,21 @@
-
-import DataTable from "../../../components/Admin/DataTable";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AgentDatatables from "../../../components/Admin/AgentDatatable";
-import { useContext } from "react";
-import { AdminContext } from "../../../stores/AdminContext";
 import { Navigate } from "react-router-dom";
+import { useSelector } from 'react-redux';
 
 export default function AdminAgent() {
     const [agents, setAgents] = useState([]);
-    const { admin } = useContext(AdminContext)
-    
+    const [redirect, setRedirect] = useState(null);
+    const { admin } = useSelector((state) => state.auth)
+    const [update, setUpdate] = useState(false);
+
     useEffect(() => {
+        
+        if (!admin) {
+            setRedirect('/admin/login');
+        }
+
         axios.get('/admin/agents').then(({ data }) => {
             console.log(data, "userssssssssssssssssss");
             const formattedUsers = data.map((user, index) => ({
@@ -23,7 +27,11 @@ export default function AdminAgent() {
             }));
             setAgents(formattedUsers);
         });
-    }, []);
+    }, [update]);
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     console.log(agents, "formattedddddddddddd");
     return (
@@ -31,7 +39,7 @@ export default function AdminAgent() {
             <div className="info">
                 <h1>Admin Mangement</h1>
             </div>
-            <AgentDatatables rows={agents} />
+            <AgentDatatables rows={agents} setUpdate={setUpdate} />
         </div>
     )
 }

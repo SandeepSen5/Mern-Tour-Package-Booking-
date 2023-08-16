@@ -2,18 +2,23 @@ import "./AdminUser.scss";
 import DataTable from "../../../components/Admin/DataTable";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useContext } from "react";
-import { AdminContext } from "../../../stores/AdminContext";
 import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 // ... import statements
 
 export default function AdminUser() {
-    
+
+    const { admin } = useSelector((state) => state.auth)
     const [users, setUsers] = useState([]);
-    const { admin } = useContext(AdminContext)
-   
-   
+    const [redirect, setRedirect] = useState(null);
+    const [update, setUpdate] = useState(false);
+
     useEffect(() => {
+
+        if (!admin) {
+            setRedirect('/admin/login');
+        }
+
         axios.get('/admin/users').then(({ data }) => {
             console.log(data, "userssssssssssssssssss");
             const formattedUsers = data.map((user, index) => ({
@@ -25,16 +30,18 @@ export default function AdminUser() {
             }));
             setUsers(formattedUsers);
         });
-    }, []);
+    }, [update]);
 
-    console.log(users, "formattedddddddddddd");
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     return (
         <div className="users">
             <div className="info">
                 <h1>Users</h1>
             </div>
-            <DataTable rows={users} />
+            <DataTable rows={users} setUpdate={setUpdate} />
         </div>
     );
 }

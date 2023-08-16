@@ -2,10 +2,10 @@ import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
-import axios from "axios";
-import { useContext } from "react";
-import { AgentContext } from "../../stores/AgentContext";
+import { Link, Navigate, useNavigate } from "react-router-dom";
+import { login } from "../../redux/slices/agent/agentSlice";
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 
 const userSchema = yup.object().shape({
     email: yup.string().email("Invalid email format").required("Email is required").trim(),
@@ -23,11 +23,28 @@ const userSchema = yup.object().shape({
 
 export default function LoginPage() {
 
+    const [redirect, setRedirect] = useState(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [redirect, setRedirect] = useState(false);
-    const { setAgent, agent } = useContext(AgentContext)
     const [errors, setErrors] = useState({});
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { agent, agentmessage } = useSelector((state) => state.agent);
+    console.log(agent, "assssssssssssss")
+
+    useEffect(() => {
+        if (agent) {
+            setRedirect('/agent/profile');
+        }
+    }, [agent]);
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
+
+    if (agent) {
+        navigate('/agent/profile')
+    }
 
     const notify = (error) => toast.info(error, {
         position: "top-right",
@@ -39,15 +56,16 @@ export default function LoginPage() {
         progress: undefined,
         theme: "colored",
     });
+
+
     async function handleLogin(ev) {
         ev.preventDefault();
         try {
             await userSchema.validate({ email, password }, { abortEarly: false });
-            const { data } = await axios.post('/agent/login', { email, password })
-            setAgent(data);
-            console.log(data, "data");
-            notify('Login Successful');
-            setRedirect(true);
+            const agentData = { email, password }
+            dispatch(login(agentData))
+            notify(agentmessage);
+            <Navigate to={'/agent/profile'} />
         } catch (error) {
             if (error instanceof yup.ValidationError) {
                 const newErrors = {};
@@ -60,14 +78,11 @@ export default function LoginPage() {
             }
         }
     }
-    if (agent) {
-        return <Navigate to={'/agent/profile'} />
-    }
 
     return (
         <div className=" grow flex items-center  justify-around ">
             <div className="-mt-20">
-                <h1 className="text-4xl text-center mb-4">Login</h1>
+                <h1 className="text-4xl text-center mb-4">#Agent Login</h1>
                 <form className="max-w-md mx-auto" onSubmit={handleLogin}>
                     <input type="email" placeholder="Email"
                         value={email}

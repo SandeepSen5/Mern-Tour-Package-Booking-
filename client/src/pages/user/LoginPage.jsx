@@ -3,9 +3,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import axios from "axios";
-import { useContext } from "react";
-import { UserContext } from "../../stores/UserContext";
+import { useSelector, useDispatch } from "react-redux";
+import { login } from "../../redux/slices/user/userSlice";
+import { useEffect } from 'react';
+
 
 const userSchema = yup.object().shape({
     email: yup.string().email("Invalid email format").required("Email is required").trim(),
@@ -21,7 +22,26 @@ const userSchema = yup.object().shape({
         return Object.values(values).every((value) => value.trim() !== '');
     });
 
+
 export default function LoginPage() {
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [redirect, setRedirect] = useState(null);
+    const [errors, setErrors] = useState({});
+    const { user, usermessage } = useSelector((state) => state.user);
+    console.log(user, "usersssssssssss")
+    const dispatch = useDispatch();
+    console.log(user);
+    useEffect(() => {
+        if (user) {
+            setRedirect('/');
+        }
+    }, [user]);
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     const notify = (error) => toast.info(error, {
         position: "top-right",
@@ -34,21 +54,14 @@ export default function LoginPage() {
         theme: "colored",
     });
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [redirect, setRedirect] = useState(false);
-    const { setUser, user } = useContext(UserContext);
-    const [errors, setErrors] = useState({});
-
     async function handleLogin(ev) {
         ev.preventDefault();
         try {
             await userSchema.validate({ email, password }, { abortEarly: false });
-            const { data } = await axios.post('/login', { email, password })
-            setUser(data);
-            console.log(data, "data");
-            notify('login Success');
-            setRedirect(true);
+            const userdata = { email, password };
+            dispatch(login(userdata))
+            notify(usermessage);
+            <Navigate to={'/'} />
         } catch (error) {
             if (error instanceof yup.ValidationError) {
                 const newErrors = {};
@@ -58,7 +71,6 @@ export default function LoginPage() {
                 setErrors(newErrors);
             } else {
                 notify(error.response.data);
-
             }
         }
     }

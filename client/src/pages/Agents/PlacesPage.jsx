@@ -1,17 +1,22 @@
-import { Link, Navigate, useParams } from "react-router-dom"
-import AgentNav from '../../components/Agent/AgentNav'
+import { Link, Navigate, useParams } from "react-router-dom";
+import AgentNav from '../../components/Agent/AgentNav';
 import { useState } from "react";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
-import { useContext } from "react";
-import { AgentContext } from "../../stores/AgentContext";
 
 export default function PlacesPage() {
 
     const [places, setPlaces] = useState('');
-    const {  agent } = useContext(AgentContext)
+    const [redirect, setRedirect] = useState(null);
+    const { agent } = useSelector((state) => state.agent);
 
     useEffect(() => {
+
+        if (!agent) {
+            setRedirect('/agent/login');
+        }
+
         axios.get('/agent/places').then(({ data }) => {
             console.log(data);
             setPlaces(data);
@@ -19,8 +24,8 @@ export default function PlacesPage() {
         })
     }, [])
 
-    if (!agent) {
-        return <Navigate to={'/agent/login'} />
+    if (redirect) {
+        return <Navigate to={redirect} />;
     }
 
     return (

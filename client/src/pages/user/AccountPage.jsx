@@ -1,50 +1,48 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../../stores/UserContext";
-import { Navigate, Link, useParams } from "react-router-dom";
-import axios from "axios";
-import PlacesPage from "../Agents/PlacesPage";
+import { useState } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { Navigate } from "react-router-dom";
 import UserNav from "../../components/User/UserNav";
-
-
+import { useEffect } from "react";
+import { logout, reset } from '../../redux/slices/user/userSlice';
 
 export default function AccountPage() {
+
+    const [redirectlogin, setRedirectlogin] = useState(null)
     const [redirect, setRedirect] = useState(null)
-    const { ready, user, setUser, setReady } = useContext(UserContext);
-    const { subpage } = useParams();
-    let updatedSubpage = subpage; // Create a new variable to store the updated value
-    if (updatedSubpage === undefined) {
-        updatedSubpage = 'profile'; // Assign the default value here
-    }
-    console.log(updatedSubpage);
+    const dispatch = useDispatch();
+    const { user } = useSelector((state) => state.user)
 
-    async function logout() {
-        await axios.get('/logout');
-        setUser(null);
-        setRedirect('/');
+   
+
+    if (redirectlogin) {
+        return <Navigate to={redirect} />;
     }
 
-    if (ready && !user && !redirect) {
-        return <Navigate to={'/login'} />
+    async function logoff() {
+        dispatch(logout());
+        dispatch(reset());
+        setRedirect("/");
     }
 
     if (redirect) {
-        return <Navigate to={redirect} />
+        return <Navigate to={redirect} />;
     }
 
     return (
         <div>
-         
             <UserNav />
-
-            {updatedSubpage === 'profile' && user && (
+            {user && (
                 <div className="text-center max-w-lg mx-auto ">
                     Logged in as {user.name}({user.email})<br />
-                    <button onClick={logout} className="primary max-w-sm mt-2">Logout</button>
+                    <button onClick={logoff} className="primary max-w-sm mt-2">Logout</button>
                 </div>
             )}
-            {updatedSubpage === 'places' && user && (
-                <PlacesPage />
-            )}
+            {!user &&
+                <div className="text-center max-w-lg mx-auto ">
+                    Please Login !!!
+                </div>
+
+            }
         </div>
     );
 }

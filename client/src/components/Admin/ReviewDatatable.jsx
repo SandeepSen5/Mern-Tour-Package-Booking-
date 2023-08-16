@@ -2,15 +2,12 @@ import "./DataTable.scss";
 import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
-export default function Datatables({ rows ,setUpdate}) {
+export default function ReviewDatatable({ rows, setUpdate }) {
 
-    
-
-    const Blockuser = (email) => {
+    const Blockreview = (keyid) => {
+        console.log(keyid);
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -21,7 +18,7 @@ export default function Datatables({ rows ,setUpdate}) {
             confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/blockuser', { email })
+                axios.patch('/admin/blockreview', { keyid })
                     .then((response) => {
                         Swal.fire(
                             'Blocked!',
@@ -42,7 +39,7 @@ export default function Datatables({ rows ,setUpdate}) {
 
     };
 
-    const UnBlockuser = (email) => {
+    const UnBlockreview = (keyid) => {
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -53,7 +50,7 @@ export default function Datatables({ rows ,setUpdate}) {
             confirmButtonText: 'Yes, UnBlock!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/unblockuser', { email })
+                axios.patch('/admin/unblockreview', { keyid })
                     .then((response) => {
                         Swal.fire(
                             'UnBlocked!',
@@ -74,7 +71,6 @@ export default function Datatables({ rows ,setUpdate}) {
         })
     };
 
-    console.log(rows, "haiiiiiii")
     const columns = [
         { field: 'id', headerName: 'ID', width: 90 },
         {
@@ -84,14 +80,14 @@ export default function Datatables({ rows ,setUpdate}) {
             editable: false,
         },
         {
-            field: 'email',
-            headerName: 'Email',
+            field: 'Package',
+            headerName: 'Package Title',
             width: 150,
             editable: false,
         },
         {
-            field: 'number',
-            headerName: 'Number',
+            field: 'comment',
+            headerName: 'Comment',
             width: 150,
             editable: false,
         },
@@ -110,14 +106,14 @@ export default function Datatables({ rows ,setUpdate}) {
                 console.log(params.row.email, "asdasdasda");
                 return <div className="action flex gap-1">
                     < div className="view " >
-                        <button onClick={(ev) => { Blockuser(params.row.email) }} className=" rounded-full" >
+                        <button onClick={(ev) => { Blockreview(params.row.keyid) }} className=" rounded-full" >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </button>
                     </div >
                     <div className="view ">
-                        <button onClick={(ev) => { UnBlockuser(params.row.email) }} className=" rounded-2xl " >
+                        <button onClick={(ev) => { UnBlockreview(params.row.keyid) }} className=" rounded-2xl " >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>

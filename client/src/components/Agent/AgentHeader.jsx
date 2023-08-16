@@ -1,19 +1,22 @@
-import { Link, Navigate, useLocation} from "react-router-dom";
-import { AgentContext } from "../../stores/AgentContext";
-import { useContext } from "react";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from 'react-redux';
+import { reset, logout } from '../../redux/slices/agent/agentSlice';
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import axios from "axios";
+import { useState } from "react";
+import { useEffect } from "react";
 
-export default function Header() {
+export default function AgentHeader() {
    
-    const {pathname} = useLocation();
-    console.log(pathname,"aaaaaaaaaaaaaaaaaaaa");
-    const { agent,setAgent } = useContext(AgentContext)
+    const { agent } = useSelector((state) => state.agent);
+    const [redirect, setRedirect] = useState(null);
+    const { pathname } = useLocation();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -23,15 +26,20 @@ export default function Header() {
         setAnchorEl(null);
     };
 
-    async function logout() {
-        axios.get('/agent/logout').then((response) => {
-            console.log("hello");
-            setAgent(null);
-            return <Navigate to={"/agent"} />
-        })
+    async function logoff() {
+        handleClose();
+        dispatch(logout());
+        dispatch(reset());
+        setRedirect("/agent/login");
     }
 
-    console.log(agent, "agent there");
+    useEffect(() => {
+        if (redirect) {
+            navigate(redirect);
+            setRedirect(null);
+        }
+    }, [redirect, navigate]);
+
     return (
         <div>
             <header className=' flex justify-between mt-1'>
@@ -71,13 +79,11 @@ export default function Header() {
                                     'aria-labelledby': 'basic-button',
                                 }}
                             >
-                                <MenuItem onClick={handleClose} >
-                                    <MenuItem onClick={logout}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
-                                        </svg>
-                                        Logout
-                                    </MenuItem>
+                                <MenuItem onClick={logoff}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                                    </svg>
+                                    Logout
                                 </MenuItem>
                             </Menu>
                         </div>

@@ -1,23 +1,35 @@
+import React from 'react';
 import { useState } from 'react';
-import {format } from 'date-fns'
+import { format } from 'date-fns'
 import BookingDatatable from '../../../components/Admin/BookingDatatable';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router-dom';
 
+export default function AdminBooking() {
 
-export default function AdminBoking() {
     const [orders, setOrders] = useState('');
+    const [redirect, setRedirect] = useState(null);
+    const { admin } = useSelector((state) => state.auth)
+    const [update, setUpdate] = useState(false);
+
     useEffect(() => {
+
+        if (!admin) {
+            setRedirect('/admin/login');
+        }
+
         axios.get('/admin/allorders').then(({ data }) => {
             const formattedOrders = data.map((order, index) => (
                 {
                     id: index + 1,
-                    keyid:order._id,
+                    keyid: order._id,
                     title: order.place.title,
                     guestno: order.guestno,
                     name: order.name,
                     orderstatus: order.orderstatus,
-                    date:format(new Date(order.bookin), 'yyyy-MM-dd'),
+                    date: format(new Date(order.bookin), 'yyyy-MM-dd'),
                     total: order.total,
                     deliverystatus: order.deliverystatus,
                     reason: order.reason,
@@ -26,11 +38,16 @@ export default function AdminBoking() {
             setOrders(formattedOrders)
         })
 
-    }, []);
+    }, [update]);
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     return (
         <div>
-            <BookingDatatable rows={orders} />
+            <BookingDatatable rows={orders} setUpdate={setUpdate} />
+
         </div>
     )
 }

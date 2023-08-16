@@ -3,12 +3,14 @@ import UserNav from "../../components/User/UserNav"
 import axios from "axios"
 import { Link } from "react-router-dom";
 import Slide from "../../components/User/Slide";
+
 export default function IndexPages() {
   const [places, setPlaces] = useState([]);
+ 
   useEffect(() => {
     axios.get('/places').then((response) => {
       setPlaces(response.data);
-      console.log(response.data)
+      
     })
   }, [])
 

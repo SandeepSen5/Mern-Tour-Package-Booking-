@@ -1,29 +1,40 @@
-import { Link, Navigate } from "react-router-dom"
-import { UserContext } from "../../stores/UserContext"
-import { useContext } from "react"
+import { Link, Navigate, useNavigate } from "react-router-dom"
+import { useSelector, useDispatch } from 'react-redux';
+import { reset, logout } from '../../redux/slices/user/userSlice';
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import axios from "axios";
+import { useState } from "react";
+import { useEffect } from "react";
+
 export default function Header() {
 
-    const { user, setUser } = useContext(UserContext)
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [redirect, setRedirect] = useState('');
+    const { user } = useSelector((state) => state.user);
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
-    async function logout() {
-        axios.get('/logout').then((response) => {
-            console.log("hello");
-            setUser(null);
-            return <Navigate to={"/"} />
-        })
+    async function logoff() {
+        handleClose();
+        dispatch(logout());
+        dispatch(reset());
+        setRedirect("/");
+    }
+
+    if (redirect) {
+        navigate(redirect);
+        setRedirect(null);
     }
 
     return (
@@ -80,8 +91,9 @@ export default function Header() {
                             >
                                 <Link to={'/bookings'}><MenuItem onClick={handleClose}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796a3.765 3.765 0 00-2.528 0m4.796 4.796c-.181.506-.475.982-.88 1.388a3.736 3.736 0 01-1.388.88m2.268-2.268l4.138 3.448m0 0a9.027 9.027 0 01-1.306 1.652c-.51.51-1.064.944-1.652 1.306m0 0l-3.448-4.138m3.448 4.138a9.014 9.014 0 01-9.424 0m5.976-4.138a3.765 3.765 0 01-2.528 0m0 0a3.736 3.736 0 01-1.388-.88 3.737 3.737 0 01-.88-1.388m2.268 2.268L7.288 19.67m0 0a9.024 9.024 0 01-1.652-1.306 9.027 9.027 0 01-1.306-1.652m0 0l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.765 3.765 0 010-2.528m0 0c.181-.506.475-.982.88-1.388a3.736 3.736 0 011.388-.88m-2.268 2.268L4.33 7.288m6.406 1.18L7.288 4.33m0 0a9.024 9.024 0 00-1.652 1.306A9.025 9.025 0 004.33 7.288" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
                                     </svg>
+
                                     Bookings</MenuItem></Link>
 
                                 <Link to={'/login'}><MenuItem onClick={handleClose}>
@@ -89,14 +101,14 @@ export default function Header() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                                     </svg>WishList</MenuItem></Link>
 
-                                <MenuItem onClick={handleClose} >
-                                    <MenuItem onClick={logout}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
-                                        </svg>
-                                        Logout
-                                    </MenuItem>
+
+                                <MenuItem onClick={logoff}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M5.636 5.636a9 9 0 1012.728 0M12 3v9" />
+                                    </svg>
+                                    Logout
                                 </MenuItem>
+
                             </Menu>
                         </div>
                     )}

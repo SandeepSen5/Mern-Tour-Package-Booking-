@@ -1,28 +1,42 @@
 import { useState } from "react";
 import axios from 'axios';
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function CategoryList() {
+
     const { id } = useParams();
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [addedPhotos, setAddedPhotos] = useState([]);
+    const [redirect, setRedirect] = useState(null);
+    const { admin } = useSelector((state) => state.auth)
+
     useEffect(() => {
+
+        if (!admin) {
+            setRedirect('/admin/login');
+        }
+
         if (!id) {
             return;
         }
-        axios.get(`/admin/categoryEditid?id=${encodeURIComponent(id)}`)
-        .then((response) => {
-            console.log(response.data);
-            setTitle(response.data.title)
-            setDescription(response.data.description)
-            setAddedPhotos(response.data.photos)
-        })
 
+        axios.get(`/admin/categoryEditid?id=${encodeURIComponent(id)}`)
+            .then((response) => {
+                console.log(response.data);
+                setTitle(response.data.title)
+                setDescription(response.data.description)
+                setAddedPhotos(response.data.photos)
+            })
     }, [id])
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     function uploadPhoto(ev) {
         console.log("enterd")
@@ -68,7 +82,7 @@ export default function CategoryList() {
             navigate('/admin/category');
         }
     }
-    
+
     return (
         <div>
             <div className="flex justify-end ">

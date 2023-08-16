@@ -1,47 +1,45 @@
-import { useContext, useState } from "react";
-import { AgentContext } from "../../stores/AgentContext";
-import { Navigate, Link, useParams } from "react-router-dom";
-import axios from "axios";
-import PlacesPage from "./PlacesPage";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import AgentNav from "../../components/Agent/AgentNav";
+import { useDispatch, useSelector } from "react-redux";
+import { logout, reset } from '../../redux/slices/agent/agentSlice'
+import { useState, useEffect } from "react";
 
-export default function AccountPage() {
-    const [redirect, setRedirect] = useState(null)
-    const { agent, setAgent, agentready, setAgentReady } = useContext(AgentContext);
+export default function AccountProfile() {
+    const [redirect, setRedirect] = useState(null);
+    const { agent } = useSelector((state) => state.agent);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const { subpage } = useParams();
-    
-    let updatedSubpage = subpage; 
+
+    useEffect(() => {
+        if (!agent) {
+            setRedirect('/agent/login');
+        }
+    }, [agent]);
+
+    let updatedSubpage = subpage;
     if (updatedSubpage === undefined) {
-        updatedSubpage = 'profile'; 
-    }
-    console.log(updatedSubpage,"sub");
-
-    async function logout() {
-        await axios.get('/agent/logout');
-        setAgent(null);
-        setRedirect('/agent/login');
+        updatedSubpage = 'profile';
     }
 
-    if (agentready && !agent && !redirect) {
-        return <Navigate to={'/agent/login'} />
+    async function logoff() {
+        dispatch(logout());
+        dispatch(reset());
     }
 
     if (redirect) {
-        return <Navigate to={redirect} />
+        return <Navigate to={redirect} />;
     }
 
     return (
-        <div>  
-            <AgentNav/>
+        <div>
+            <AgentNav />
             {updatedSubpage === 'profile' && agent && (
                 <div className="text-center max-w-lg mx-auto ">
                     Logged in as {agent.name}<br />
-                    <button onClick={logout} className="primary max-w-sm mt-2">Logout</button>
+                    <button onClick={logoff} className="primary max-w-sm mt-2">Logout</button>
                 </div>
             )}
         </div>
     );
 }
-
-
-

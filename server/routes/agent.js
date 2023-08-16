@@ -5,7 +5,6 @@ const multer = require('multer');
 const bcrypt = require('bcryptjs');
 const agentControllers = require('../controllers/agentController');
 
-
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/uploads');
@@ -15,14 +14,13 @@ const storage = multer.diskStorage({
     },
 });
 
-
 const upload = multer({ storage: storage });
 
 router.post('/register', agentControllers.agentRegister)
 
 router.post('/login', agentControllers.agentLogin)
 
-router.get('/profile', agentControllers.agentProfile)
+
 
 router.get('/logout', agentControllers.agentLogout)
 
@@ -36,9 +34,11 @@ router.put('/updateplaces', agentControllers.updatePlace)
 
 router.get('/places', agentControllers.allPlaces)
 
-router.get('/places/:id',agentControllers.singlePlace )
+router.get('/places/:id', agentControllers.singlePlace)
 
 router.get('/allcategory', agentControllers.allCategory)
+
+router.get('/userbookings' ,agentControllers.allBookings)
 
 module.exports = router;
 
