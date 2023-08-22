@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Perks from "../../components/Agent/Perks";
 import AgentNav from "../../components/Agent/AgentNav";
 import { useSelector } from "react-redux";
@@ -21,6 +23,17 @@ export default function PlacesFormpage() {
     const [allcategory, SetAllcategory] = useState('');
     const [redirect, setRedirect] = useState(false);
     const { agent } = useSelector((state) => state.agent);
+
+    const notify = (error) => toast.info(error, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+    });
 
     useEffect(() => {
 
@@ -48,7 +61,7 @@ export default function PlacesFormpage() {
             setExtraInfo(data.extraInfo);
             setCancelInfo(data.cancelInfo);
         })
-        console.log("hai");
+
 
     }, [id])
 
@@ -135,20 +148,26 @@ export default function PlacesFormpage() {
             perks, category, price, extraInfo, cancelInfo
         }
         if (id) {
-            await axios.put('/agent/updateplaces', {
-                id, ...placedata
-            });
-            setRedirect(true)
+            try {
+                await axios.put('/agent/updateplaces', {
+                    id, ...placedata
+                });
+                setRedirect(true)
+            }
+            catch (error) {
+                notify(error.response.data)
+            }
         }
         else {
-            console.log(title, address, category,
-                addedPhotos, description,
-                perks, extraInfo, cancelInfo)
-
-            await axios.post('/agent/addplaces',
-                placedata
-            );
-            setRedirect(true)
+            try {
+                await axios.post('/agent/addplaces',
+                    placedata
+                );
+                setRedirect(true)
+            }
+            catch (error) {
+                notify(error.response.data)
+            }
         }
     }
 
@@ -230,6 +249,7 @@ export default function PlacesFormpage() {
                     <button className="primary my-4">Save</button>
                 </div>
             </form>
+            <ToastContainer />
         </div>
     )
 }

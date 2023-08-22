@@ -12,6 +12,7 @@ import AgentProfile from "./pages/Agents/AgentProfile"
 import AdminHome from "./pages/Admin/Home/AdminHome";
 import axios from "axios";
 import PlacesPage from "./pages/Agents/PlacesPage";
+import UserCategoryPage from "./pages/user/UserCategoryPage";
 import PlacesFormpage from "./pages/Agents/PlacesFormpage";
 import AdminLayout from "./components/Admin/AdminLayout";
 import AdminUser from "./pages/Admin/UserManagement/AdminUser";
@@ -28,6 +29,7 @@ import AdminBooking from "./pages/Admin/Booking Management/AdminBooking";
 import AdminPackage from "./pages/Admin/PackageManagement/AdminPackage";
 import AdminReview from "./pages/Admin/Review Management/AdminReview";
 import AgentBookingList from "./pages/Agents/AgentBookingList";
+import AgentChat from "./pages/Agents/AgentChat";
 axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.withCredentials = true;
 
@@ -41,6 +43,7 @@ function App() {
         <Route path="/profile" element={<Account />} />
         <Route path="/favourites" element={<Account />} />
         <Route path="/contact" element={<Userchat />} />
+        <Route path="/category/:id" element={<UserCategoryPage />} />
         <Route path="/package/:id" element={<SinglePackage />} />
         <Route path="/payment/:id" element={<Payments />} />
         <Route path="/success" element={<Success />} />
@@ -57,6 +60,7 @@ function App() {
         <Route path="/agent/places" element={<PlacesPage />} />
         <Route path="/agent/places/new" element={<PlacesFormpage />} />
         <Route path="/agent/places/:id" element={<PlacesFormpage />} />
+        <Route path="/agent/chat" element={<AgentChat />} />
       </Route>
       <Route path='/admin/login' element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>

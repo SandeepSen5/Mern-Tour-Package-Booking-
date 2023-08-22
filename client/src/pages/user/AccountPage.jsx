@@ -12,7 +12,7 @@ export default function AccountPage() {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.user)
 
-   
+
 
     if (redirectlogin) {
         return <Navigate to={redirect} />;
@@ -38,8 +38,9 @@ export default function AccountPage() {
                 </div>
             )}
             {!user &&
-                <div className="text-center max-w-lg mx-auto ">
+                <div className="text-center max-w-lg mx-auto mt-20 text-3xl ">
                     Please Login !!!
+                    <h1 className="mt-4">#Travel Around The World..</h1>
                 </div>
 
             }

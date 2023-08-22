@@ -10,6 +10,7 @@ const Agent = require('../models/agent');
 const Place = require('../models/place');
 const Category = require('../models/category');
 const Order = require('../models/order');
+const Message = require("../models/message")
 const User = require('../models/user');
 
 exports.agentRegister = async (req, res, next) => {
@@ -37,13 +38,19 @@ exports.agentLogin = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const AgentDoc = await Agent.findOne({ email });
+
+        if (!AgentDoc) {
+            return next(createError(400, "Agent Not Registered"))
+        }
+
         if (!AgentDoc.status) {
             return next(createError(400, "Agent Blocked"))
         }
+        
         if (AgentDoc) {
             const passok = bcrypt.compareSync(password, AgentDoc.password);
             if (passok) {
-                jwt.sign({ email: AgentDoc.email, id: AgentDoc._id }, jwtSecret, {}, (err, token) => {
+                jwt.sign({ email: AgentDoc.email, name: AgentDoc.name, id: AgentDoc._id }, jwtSecret, {}, (err, token) => {
                     if (err) throw err;
                     res.cookie('token', token).json(AgentDoc);
                 })
@@ -109,6 +116,16 @@ exports.agentAddplaces = async (req, res, next) => {
         const { token } = req.cookies;
         const { title, address, addedPhotos,
             description, perks, category, price, extraInfo, cancelInfo } = req.body;
+
+        const requiredFields = [title, address, description, category, price, extraInfo, cancelInfo];
+        if (requiredFields.some(field => !field)) {
+            return next(createError(400, "All required fields must be filled."))
+        }
+
+        if (price < 0) {
+            return next(createError(400, "Enter Valid Price"));
+        }
+
         jwt.verify(token, jwtSecret, {}, async (err, agentData) => {
             if (err) throw err;
             const PlaceDoc = await Place.create({
@@ -118,6 +135,7 @@ exports.agentAddplaces = async (req, res, next) => {
             })
             res.status(200).json(PlaceDoc);
         })
+
     }
     catch (err) {
         next(err);
@@ -200,5 +218,41 @@ exports.allBookings = async (req, res) => {
 
 
 
+exports.getallUsers = async (req, res, next) => {
 
+    try {
+        console.log(req.agentId, "req.agentId");
+        const userDoc = await Message.find({ recipient: req.agentId }).populate({
+            path: 'sender',
+            model: 'User'
+        })
 
+        const senders = userDoc.map(message => ({
+            userId: message.sender._id,
+            username: message.sender.name
+        }));
+
+        res.status(200).json(senders);
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+exports.getuserMessages = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const agentId = req.agentId;
+
+        const messageDoc = await Message.find({
+            $or: [
+                { sender: id, recipient: agentId },
+                { sender: agentId, recipient: id }
+            ]
+        }).sort({ createdAt: 1 });
+
+        res.status(200).json(messageDoc);
+    } catch (err) {
+        next(err);
+    }
+};

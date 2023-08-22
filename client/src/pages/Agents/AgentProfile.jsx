@@ -15,7 +15,11 @@ export default function AccountProfile() {
         if (!agent) {
             setRedirect('/agent/login');
         }
-    }, [agent]);
+    }, [ ]);
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     let updatedSubpage = subpage;
     if (updatedSubpage === undefined) {
@@ -27,9 +31,7 @@ export default function AccountProfile() {
         dispatch(reset());
     }
 
-    if (redirect) {
-        return <Navigate to={redirect} />;
-    }
+
 
     return (
         <div>

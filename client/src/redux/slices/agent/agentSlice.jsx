@@ -2,12 +2,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import agentService from '../agent/agentService';
 
 const agent = JSON.parse(localStorage.getItem('agent'));
- 
+
 const initialState = {
     agent: agent ? agent : null,
     agentready: false,
     agentmessage: false,
-    agentisSuccess: false, 
+    agentisSuccess: false,
     agentisError: false,
     agentisLoading: false,
 }
@@ -17,7 +17,7 @@ export const login = createAsyncThunk('agent/login', async (agent, thunkAPI) => 
         return await agentService.login(agent)
     }
     catch (error) {
-        const agentmessage =  error.response.data ;
+        const agentmessage = error.response.data;
         return thunkAPI.rejectWithValue(agentmessage);
     }
 })
@@ -37,13 +37,13 @@ export const agentSlice = createSlice({
             state.agentisSuccess = false
             state.agentisError = false
             state.agentmessage = ''
-            console.log('State after reset:', state)
         }
     },
     extraReducers: (builder) => {
         builder
             .addCase(login.pending, (state) => {
                 state.agentisLoading = true
+                state.agentmessage = ''
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.agentisLoading = false

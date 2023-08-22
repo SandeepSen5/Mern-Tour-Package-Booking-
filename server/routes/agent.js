@@ -3,6 +3,7 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const bcrypt = require('bcryptjs');
+const verifyToken = require("../middlewares/agentMiddleware")
 const agentControllers = require('../controllers/agentController');
 
 const storage = multer.diskStorage({
@@ -38,7 +39,13 @@ router.get('/places/:id', agentControllers.singlePlace)
 
 router.get('/allcategory', agentControllers.allCategory)
 
-router.get('/userbookings' ,agentControllers.allBookings)
+router.get('/userbookings', agentControllers.allBookings)
+
+router.get('/getallusers',verifyToken, agentControllers.getallUsers)
+
+router.get('/getmessages/:id', verifyToken, agentControllers.getuserMessages)
+
+
 
 module.exports = router;
 

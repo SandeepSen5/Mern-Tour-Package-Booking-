@@ -1,9 +1,11 @@
 import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
+import { useEffect } from 'react';
+import { useSelector } from "react-redux";
 
 const userSchema = yup.object().shape({
     name: yup.string().required("Name is required").trim(), // Adding .trim() to remove leading/trailing whitespaces
@@ -27,12 +29,17 @@ const userSchema = yup.object().shape({
     });
 
 export default function RegisterPage() {
+
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [number, setNumber] = useState('');
     const [password, setPassword] = useState('');
     const [errors, setErrors] = useState({});
-    console.log(name)
+    const [redirect, setRedirect] = useState(null);
+    const [redirectLogin, setRedirectLogin] = useState(null);
+    const { agent } = useSelector((state) => state.agent)
+
+
     const notify = (msg) => toast.info(msg, {
         position: "top-right",
         autoClose: 5000,
@@ -43,6 +50,20 @@ export default function RegisterPage() {
         progress: undefined,
         theme: "colored",
     });
+
+
+    useEffect(() => {
+        if (agent) {
+            setRedirect('/agent/profile');
+        }
+    }, [agent]);
+
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
+
+
     async function registerUser(ev) {
         ev.preventDefault();
         try {
@@ -51,6 +72,7 @@ export default function RegisterPage() {
                 name, email, number, password
             })
             notify('Registration Done');
+            setRedirectLogin('/agent/login');
         }
         catch (error) {
             if (error instanceof yup.ValidationError) {
@@ -64,6 +86,11 @@ export default function RegisterPage() {
             }
         }
     }
+
+    if (redirectLogin) {
+        return <Navigate to={redirectLogin} />;
+    }
+
     return (
         <div className="mt-2 grow flex items-center justify-around ">
             <div className="-mt-20">

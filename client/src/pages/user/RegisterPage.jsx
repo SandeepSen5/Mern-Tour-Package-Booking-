@@ -2,10 +2,11 @@ import * as yup from 'yup';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link, Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import { useState } from "react";
-import { useContext } from "react";
-import { UserContext } from "../../stores/UserContext";
+import { useEffect } from 'react';
+
 
 const userSchema = yup.object().shape({
     name: yup.string().required("Name is required").trim(), // Adding .trim() to remove leading/trailing whitespaces
@@ -40,14 +41,29 @@ export default function RegisterPage() {
         progress: undefined,
         theme: "colored",
     });
-    const { user } = useContext(UserContext);
+
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [number, setNumber] = useState('');
     const [password, setPassword] = useState('');
-    const [errors, setErrors] = useState({}); // State to track validation errors
+    const [errors, setErrors] = useState({});
+    const [redirect, setRedirect] = useState(null);
+    const [redirectLogin, setRedirectLogin] = useState(null);
+    const { user } = useSelector((state) => state.user);
 
-    console.log(name);
+
+
+    useEffect(() => {
+        if (user) {
+            setRedirect('/');
+        }
+    }, [user]);
+
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
+
 
     async function registerUser(ev) {
         ev.preventDefault();
@@ -56,7 +72,7 @@ export default function RegisterPage() {
             await axios.post('/register', {
                 name, email, number, password
             });
-            notify('Registration Done');
+            setRedirectLogin('/login');
         } catch (error) {
             if (error instanceof yup.ValidationError) {
                 const newErrors = {};
@@ -70,8 +86,8 @@ export default function RegisterPage() {
         }
     }
 
-    if (user) {
-        return <Navigate to={'/'} />
+    if (redirectLogin) {
+        return <Navigate to={redirectLogin} />;
     }
 
     return (

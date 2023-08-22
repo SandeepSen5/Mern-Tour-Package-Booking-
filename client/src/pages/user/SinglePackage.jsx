@@ -1,3 +1,6 @@
+import * as yup from 'yup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useState } from "react";
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
@@ -5,6 +8,21 @@ import { useSelector } from 'react-redux';
 import UserNav from "../../components/User/UserNav"
 import axios from "axios";
 import Swal from 'sweetalert2'
+
+const userSchema = yup.object().shape({
+    name: yup.string().required("Name is required").trim(), // Adding .trim() to remove leading/trailing whitespaces
+    email: yup.string().email("Invalid email format").required("Email is required").trim(),
+    phone: yup
+        .string()
+        .required("Number is required")
+        .min(10, "Number must be 10 characters")
+        .max(10, "Number can't exceed 10 characters")
+        .trim(),
+})
+    .test('blank-check', 'Please fill out all fields.', (values) => {
+        // Check if any of the fields are blank (empty or whitespace-only)
+        return Object.values(values).every((value) => value.trim() !== '');
+    });
 
 export default function SinglePackage() {
 
@@ -19,6 +37,7 @@ export default function SinglePackage() {
     const [redirect, setRedirect] = useState(false);
     const [reviews, setReviews] = useState('')
     const [update, setUpdate] = useState(false);
+    const [errors, setErrors] = useState({});
     const { user } = useSelector((state) => state.user);
     console.log(user, "usersssssssssss")
 
@@ -39,15 +58,41 @@ export default function SinglePackage() {
         return '';
     }
 
-    async function bookThis() {
+    const notify = (error) => toast.info(error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    });
 
-        const data = {
-            bookin, guestno, name, email, phone,
-            place: place._id, price: place.price
+    async function bookThis() {
+        try {
+            await userSchema.validate({ name, email, phone }, { abortEarly: false });
+            const data = {
+                bookin, guestno, name, email, phone,
+                place: place._id, price: place.price
+            }
+            await axios.post('/bookings', data)
+                .then((response) => {
+                    setRedirect(`/payment/${response.data._id}`);
+                })
+
+        } catch (error) {
+            if (error instanceof yup.ValidationError) {
+                const newErrors = {};
+                error.inner.forEach(err => {
+                    newErrors[err.path] = err.message;
+                });
+                setErrors(newErrors);
+            } else {
+                notify(error.response.data);
+            }
         }
-        await axios.post('/bookings', data).then((response) => {
-            setRedirect(`/payment/${response.data._id}`);
-        });
+
     }
 
     if (redirect) {
@@ -131,15 +176,24 @@ export default function SinglePackage() {
                     </button>
                 </div>
                 <div className="my-4">
-                    <h2 className="font-semibold text-2xl">About</h2>
+                    <h2 className="font-semibold text-3xl mb-2">About</h2>
                     {place.address}
                 </div>
                 <div className="my-4">
-                    <h2 className="font-semibold text-2xl">Day Iternary</h2>
+                    <h2 className="font-semibold text-3xl mb-2">Day Iternary</h2>
                     {place.description}
                 </div>
                 <div className="mt-10 grid grid-cols-1 md:grid-cols-[2fr_1fr]">
-                    <div>
+                    <div> <h1 className="text-3xl font-semibold">Fun Activities</h1>
+                        {place.perks.map((perk) => (
+                            <label className="border p-4 flex rounded-2xl gap-2 items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z" />
+                                </svg>
+
+                                <span>{perk}</span>
+                            </label>
+                        ))}
                     </div>
                     {user && <div className="bg-white shadow p-4 rounded-2xl">
                         <div className="text-2xl text-center">
@@ -161,18 +215,21 @@ export default function SinglePackage() {
                                     <label>Name  :</label>
                                     <input type="text" placeholder="Enter Name" value={name}
                                         onChange={(ev) => setName(ev.target.value)} />
+                                    {errors.name && <div className="text-red-500">{errors.name}</div>}
                                 </div>
                                 <div className="my-4 border px-2 py-2 ">
                                     <label>Phone :</label>
                                     <input type="text" placeholder="Mobile Number"
                                         value={phone}
                                         onChange={(ev) => setPhone(ev.target.value)} />
+                                    {errors.phone && <div className="text-red-500">{errors.phone}</div>}
                                 </div>
                                 <div className="my-4 border px-2 py-2 ">
                                     <label>Email  :</label>
                                     <input type="email" placeholder="Email"
                                         value={email}
                                         onChange={(ev) => setEmail(ev.target.value)} />
+                                    {errors.email && <div className="text-red-500">{errors.email}</div>}
                                 </div>
                             </div>
                         )}
@@ -180,7 +237,7 @@ export default function SinglePackage() {
                     </div>}
                 </div>
                 <div className="mt-4 p-4 rounded-2xl">
-                    <h1 className="text-2xl mb-4 underline">Reviews</h1>
+                    {reviews.length > 0 && <h1 className="text-2xl mb-4 underline">Reviews</h1>}
                     {reviews.length > 0 && reviews.map((review) => {
                         return (
                             <div className=" flex cursor-pointer gap-4  mb-6 relative">
@@ -208,6 +265,7 @@ export default function SinglePackage() {
                     })}
                 </div>
             </div>
+            <ToastContainer />
         </div>
 
     )

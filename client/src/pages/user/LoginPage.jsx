@@ -7,7 +7,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { login } from "../../redux/slices/user/userSlice";
 import { useEffect } from 'react';
 
-
 const userSchema = yup.object().shape({
     email: yup.string().email("Invalid email format").required("Email is required").trim(),
     password: yup
@@ -18,11 +17,10 @@ const userSchema = yup.object().shape({
         .trim(),
 })
     .test('blank-check', 'Please fill out all fields.', (values) => {
-        // Check if any of the fields are blank (empty or whitespace-only)
         return Object.values(values).every((value) => value.trim() !== '');
     });
 
-
+    
 export default function LoginPage() {
 
     const [email, setEmail] = useState('');
@@ -30,14 +28,20 @@ export default function LoginPage() {
     const [redirect, setRedirect] = useState(null);
     const [errors, setErrors] = useState({});
     const { user, usermessage } = useSelector((state) => state.user);
-    console.log(user, "usersssssssssss")
+    
     const dispatch = useDispatch();
-    console.log(user);
+    
     useEffect(() => {
         if (user) {
             setRedirect('/');
         }
     }, [user]);
+
+    useEffect(() => {
+        if (usermessage) {
+            notify(usermessage);
+        }
+    }, [usermessage]);
 
     if (redirect) {
         return <Navigate to={redirect} />;
@@ -59,8 +63,7 @@ export default function LoginPage() {
         try {
             await userSchema.validate({ email, password }, { abortEarly: false });
             const userdata = { email, password };
-            dispatch(login(userdata))
-            notify(usermessage);
+            dispatch(login(userdata));
             <Navigate to={'/'} />
         } catch (error) {
             if (error instanceof yup.ValidationError) {
@@ -74,9 +77,11 @@ export default function LoginPage() {
             }
         }
     }
+
     if (user) {
         return <Navigate to={'/'} />
     }
+
     return (
         <div className="mt-4 grow flex items-center justify-around ">
             <div className="-mt-8">

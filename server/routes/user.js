@@ -13,7 +13,9 @@ router.get('/places', userController.getAllplaces)
 
 router.get('/place/:id', userController.singlePlace)
 
-router.post('/bookings', userController.bookPackage);
+router.post('/bookings', userController.bookPackage)
+
+router.get('/bookingdetails/:id', userController.getBookingdetails)
 
 router.get('/logout', userController.userLogout)
 
@@ -30,6 +32,12 @@ router.post('/addreview', userController.addReview)
 router.get('/allreviews/:id', userController.getIdreviews)
 
 router.delete('/deletecatid/:id', userController.deleteReview)
+
+router.get('/getmessages/:id', verifyToken, userController.getuserMessages)
+
+router.get('/getall', userController.getallAgents)
+
+router.get('/categoryselected/:id', userController.selectedCategory)
 
 module.exports = router;
 
