@@ -22,6 +22,8 @@ import SinglePackage from "./pages/user/SinglePackage";
 import Payments from "./pages/user/Payment";
 import Success from "./pages/user/Success";
 import Userchat from "./pages/user/Userchat";
+import Wallet from "./pages/user/Wallet";
+import WalletSuccess from "./pages/user/WalletSuccess";
 import CategoryPage from "./pages/Admin/CategoryPage";
 import CategoryList from "./pages/Admin/CategoryList";
 import BookingList from "./pages/user/BookingsList";
@@ -30,6 +32,9 @@ import AdminPackage from "./pages/Admin/PackageManagement/AdminPackage";
 import AdminReview from "./pages/Admin/Review Management/AdminReview";
 import AgentBookingList from "./pages/Agents/AgentBookingList";
 import AgentChat from "./pages/Agents/AgentChat";
+import Error from "./pages/ErrorPage/Error";
+import AgentError from "./pages/ErrorPage/AgentError";
+import AdminError from "./pages/ErrorPage/AdminError";
 axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.withCredentials = true;
 
@@ -42,14 +47,17 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/profile" element={<Account />} />
         <Route path="/favourites" element={<Account />} />
-        <Route path="/contact" element={<Userchat />} />
+        <Route path="/contact/:subpage?" element={<Userchat />} />
         <Route path="/category/:id" element={<UserCategoryPage />} />
         <Route path="/package/:id" element={<SinglePackage />} />
         <Route path="/payment/:id" element={<Payments />} />
         <Route path="/success" element={<Success />} />
+        <Route path="/sucess" element={<WalletSuccess />} />
         <Route path="/bookings" element={<BookingList />} />
+        <Route path="/wallet" element={<Wallet />} />
         <Route path="/account/:subpage?" element={<Account />} />
         <Route path="/account/:subpage/:action" element={<Account />} />
+        <Route path="*" element={<Error />} />
       </Route>
       <Route path="/agent" element={<AgentLayout />}>
         <Route index element={<AgentProfile />} />
@@ -61,6 +69,7 @@ function App() {
         <Route path="/agent/places/new" element={<PlacesFormpage />} />
         <Route path="/agent/places/:id" element={<PlacesFormpage />} />
         <Route path="/agent/chat" element={<AgentChat />} />
+        <Route path="*" element={<AgentError />} />
       </Route>
       <Route path='/admin/login' element={<AdminLogin />} />
       <Route path="/admin" element={<AdminLayout />}>
@@ -73,6 +82,7 @@ function App() {
         <Route path='/admin/packages' element={<AdminPackage />} />
         <Route path='/admin/bookings' element={<AdminBooking />} />
         <Route path='/admin/review' element={<AdminReview />} />
+        <Route path="*" element={<AdminError />} />
       </Route>
     </Routes>
   )

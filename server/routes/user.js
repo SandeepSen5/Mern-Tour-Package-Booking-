@@ -7,6 +7,8 @@ const userController = require("../controllers/userController");
 
 router.post('/register', userController.userRegister);
 
+router.post('/googleregister', userController.googleRegister);
+
 router.post('/login', userController.userLogin)
 
 router.get('/places', userController.getAllplaces)
@@ -23,11 +25,15 @@ router.post('/create-payment-intent/:id', verifyToken, userController.createOrde
 
 router.put('/order', userController.updateOrder)
 
+router.post('/codorder/:id', verifyToken, userController.updateCodOrder)
+
 router.get('/mybookings', verifyToken, userController.myBookings)
 
 router.get('/allcategory', userController.getCategory)
 
 router.post('/addreview', userController.addReview)
+
+router.post('/cancelbooking', verifyToken, userController.cancelBooking)
 
 router.get('/allreviews/:id', userController.getIdreviews)
 
@@ -38,6 +44,16 @@ router.get('/getmessages/:id', verifyToken, userController.getuserMessages)
 router.get('/getall', userController.getallAgents)
 
 router.get('/categoryselected/:id', userController.selectedCategory)
+
+router.get('/getuserdetails', verifyToken, userController.getUserDetails)
+
+router.post('/updateuser', verifyToken, userController.updateUser)
+
+router.post('/updatepassword', verifyToken, userController.updateUserPaaword)
+
+router.get('/getslots/:id', userController.getSlots)
+
+router.get('/getwallet', verifyToken, userController.getWalletBalance)
 
 module.exports = router;
 

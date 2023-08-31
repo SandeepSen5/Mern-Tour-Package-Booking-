@@ -13,12 +13,14 @@ const orderSchema = new mongoose.Schema({
     phone: { type: String, required: true },
     email: { type: String, required: true },
     total: { type: Number, required: true },
-    payment_intent: { type: String, required: true },
+    payment_intent: { type: String},
     ordermethod: { type: String },
     orderstatus: { type: String },
     deliverystatus: { type: String },
     reason: { type: String, default: "Nil" },
-})
+}, {
+    timestamps: true
+});
 
 const OrderModel = mongoose.model('Order', orderSchema);
 module.exports = OrderModel;

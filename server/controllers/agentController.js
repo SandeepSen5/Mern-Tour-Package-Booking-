@@ -46,7 +46,7 @@ exports.agentLogin = async (req, res, next) => {
         if (!AgentDoc.status) {
             return next(createError(400, "Agent Blocked"))
         }
-        
+
         if (AgentDoc) {
             const passok = bcrypt.compareSync(password, AgentDoc.password);
             if (passok) {
@@ -225,7 +225,7 @@ exports.getallUsers = async (req, res, next) => {
         const userDoc = await Message.find({ recipient: req.agentId }).populate({
             path: 'sender',
             model: 'User'
-        })
+        }).sort({ createdAt: -1 })
 
         const senders = userDoc.map(message => ({
             userId: message.sender._id,
@@ -238,6 +238,7 @@ exports.getallUsers = async (req, res, next) => {
         next(err);
     }
 };
+
 
 exports.getuserMessages = async (req, res, next) => {
     try {
@@ -256,3 +257,77 @@ exports.getuserMessages = async (req, res, next) => {
         next(err);
     }
 };
+
+
+exports.getParticularOrder = async (req, res, next) => {
+    try {
+        console.log(req.agentId);
+        const placeDoc = await Place.find({ owner: req.agentId });
+        console.log(placeDoc);
+        const OrderDoc = await Order.find({ place: placeDoc[0]._id }).populate({
+            path: 'place',
+            model: 'Place',
+        });
+        console.log(OrderDoc);
+        res.status(200).json(OrderDoc);
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+exports.getAgentDetails = async (req, res, next) => {
+    try {
+        console.log(req.userId)
+        const agentDoc = await Agent.findById(req.agentId);
+        res.status(200).json(agentDoc);
+    } catch (err) {
+        next(err);
+    }
+}
+
+
+exports.updateAgent = async (req, res, next) => {
+    try {
+        const { name, email, number } = req.body;
+        const agentDoc = await Agent.findByIdAndUpdate(req.agentId, { $set: { name: name, email: email, number: number } });
+        res.status(200).json(agentDoc);
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+
+exports.updateAgentPaaword = async (req, res, next) => {
+    try {
+        const { oldpassword, newpassword, confirmpassword } = req.body;
+
+        if (!oldpassword || !newpassword || !confirmpassword) {
+            return next(createError(400, "All fields are required"));
+        }
+
+        if (newpassword !== confirmpassword) {
+            return next(createError(400, "Password Doesnt Match"))
+        }
+
+        if (newpassword.length < 4 || newpassword.length > 10) {
+            return next(createError(400, "Password should be between 4 and 10 characters"));
+        }
+
+        const userDoc = await Agent.findById(req.agentId);
+        if (userDoc) {
+            const passok = bcrypt.compareSync(oldpassword, userDoc.password);
+            if (passok) {
+                const userDocumts = await Agent.findByIdAndUpdate(req.agentId, { $set: { password: bcrypt.hashSync(newpassword, bcryptSalt) } });
+                res.status(200).json(userDocumts)
+            }
+            else {
+                return next(createError(400, "Incorrect Password"))
+            }
+        }
+
+    } catch (err) {
+        next(err);
+    }
+}

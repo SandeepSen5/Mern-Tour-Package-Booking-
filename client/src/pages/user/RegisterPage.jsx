@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from 'react';
+import GoogleLogin from './Google/Googlelogin';
 
 
 const userSchema = yup.object().shape({
@@ -69,7 +70,7 @@ export default function RegisterPage() {
         ev.preventDefault();
         try {
             await userSchema.validate({ name, email, number, password }, { abortEarly: false });
-            await axios.post('/register', {
+            await axios.post(import.meta.env.VITE_USER_RP_REGISTER, {
                 name, email, number, password
             });
             setRedirectLogin('/login');
@@ -118,8 +119,12 @@ export default function RegisterPage() {
                         <ToastContainer />
                     </div>
                 </form>
+                <div className='text-center mt-5  rounded-2xl'>
+                    <GoogleLogin />
+                </div>
             </div>
-
         </div>
     );
 }
+
+

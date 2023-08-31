@@ -21,8 +21,6 @@ router.post('/register', agentControllers.agentRegister)
 
 router.post('/login', agentControllers.agentLogin)
 
-
-
 router.get('/logout', agentControllers.agentLogout)
 
 router.post('/uploadbyLink', agentControllers.agentuploadbyLink)
@@ -41,11 +39,17 @@ router.get('/allcategory', agentControllers.allCategory)
 
 router.get('/userbookings', agentControllers.allBookings)
 
-router.get('/getallusers',verifyToken, agentControllers.getallUsers)
+router.get('/getallusers', verifyToken, agentControllers.getallUsers)
 
 router.get('/getmessages/:id', verifyToken, agentControllers.getuserMessages)
 
+router.get('/getagentorders', verifyToken, agentControllers.getParticularOrder)
 
+router.get('/getagentdetails', verifyToken, agentControllers.getAgentDetails)
+
+router.post('/updateuser', verifyToken, agentControllers.updateAgent)
+
+router.post('/updatepassword', verifyToken, agentControllers.updateAgentPaaword)
 
 module.exports = router;
 

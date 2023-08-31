@@ -68,7 +68,7 @@ export default function RegisterPage() {
         ev.preventDefault();
         try {
             await userSchema.validate({ name, email, number, password }, { abortEarly: false });
-            await axios.post('/agent/register', {
+            await axios.post(import.meta.env.VITE_AGENT_AR_AGENT_REGISTER, {
                 name, email, number, password
             })
             notify('Registration Done');

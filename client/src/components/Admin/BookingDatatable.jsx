@@ -17,10 +17,11 @@ export default function BookingDatatable({ rows, setUpdate }) {
         theme: "colored",
     });
 
+     
     function makeRequest(id, status) {
         console.log(id, 'idididid');
         console.log(status, 'statusidididid');
-        axios.patch('/admin/bookingstatus', { id, status }).then((response) => {
+        axios.patch(import.meta.env.VITE_ADMIN_BD_UPDATE_BOOKINGSTATUS, { id, status }).then((response) => {
             notify('Update Success');
             setUpdate((prev) => !prev);
         })
@@ -61,7 +62,7 @@ export default function BookingDatatable({ rows, setUpdate }) {
                 </select>
             ),
         },
-        { field: ' reason', headerName: 'reason', width: 130 },
+        { field: 'reason', headerName: 'Reason', width: 130 },
     ];
 
 

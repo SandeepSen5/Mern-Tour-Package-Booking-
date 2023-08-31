@@ -6,7 +6,10 @@ const UserSchema = new Schema({
     email: { type: String, unique: true },
     number: Number,
     password: String,
-    status: { type: Boolean, default: true }, 
+    status: { type: Boolean, default: true },
+    wallet: { type: Number, default: 0 },
+}, {
+    timestamps: true
 });
 
 const UserModel = mongoose.model('User', UserSchema);

@@ -4,26 +4,29 @@ import { format } from 'date-fns'
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Review from "../../components/User/Review";
+import TourCancel from "../../components/User/TourCancel";
 import { Navigate } from "react-router-dom";
 
 export default function BookingList() {
 
     const [bookings, setBookings] = useState([]);
     const [redirect, setRedirect] = useState(null);
+    const [update, setUpdate] = useState(null);
     const { user } = useSelector((state) => state.user)
 
     useEffect(() => {
         if (!user) {
             setRedirect('/');
         }
-        axios.get('/mybookings').then((response) => {
+        axios.get(import.meta.env.VITE_USER_BL_MYBOOKINGS).then((response) => {
             setBookings(response.data);
         })
-    }, []);
+    }, [update]);
 
     if (redirect) {
         return <Navigate to={redirect} />;
     }
+
     return (
         <div>
             <UserNav />
@@ -49,8 +52,10 @@ export default function BookingList() {
                                     </h2>
                                 </div>
                                 <div className="mt-4 md:mt-0 ">
-                                    {booking.deliverystatus !== 'Success' &&
-                                        <button className="bg-primary rounded-lg px-4 py-2 text-xl">Cancel Tour</button>
+                                    {booking.deliverystatus == 'Pending' &&
+                                        <button className="bg-primary rounded-lg px-4 py-2 text-xl">
+                                            <TourCancel bookingid={booking._id} setUpdate={setUpdate} />
+                                        </button>
                                     }
                                     {booking.deliverystatus == 'Success' &&
                                         <button className="flex items-center gap-2 bg-green-300 rounded-lg px-4 py-2 text-xl">

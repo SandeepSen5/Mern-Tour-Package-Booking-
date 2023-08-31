@@ -18,7 +18,7 @@ export default function CategoryDatatables({ rows, setUpdate }) {
             confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/blockcategory', { title })
+                axios.patch(import.meta.env.VITE_ADMIN_CD_BLOCKCATEGORY, { title })
                     .then((response) => {
                         Swal.fire(
                             'Blocked!',
@@ -49,7 +49,7 @@ export default function CategoryDatatables({ rows, setUpdate }) {
             confirmButtonText: 'Yes, UnBlock!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/unblockcategory', { title })
+                axios.patch(import.meta.env.VITE_ADMIN_CD_UNBLOCKCATEGORY, { title })
                     .then((response) => {
                         Swal.fire(
                             'UnBlocked!',
@@ -72,7 +72,7 @@ export default function CategoryDatatables({ rows, setUpdate }) {
 
     const editcategory = async (title) => {
         console.log(title);
-        await axios.get(`/admin/categoryid?title=${encodeURIComponent(title)}`)
+        await axios.get(import.meta.env.VITE_ADMIN_CD_EDITCATEGORY + `title=${encodeURIComponent(title)}`)
             .then((response) => {
                 console.log(response.data);
                 navigate(`/admin/category/${response.data._id}`);

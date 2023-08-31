@@ -18,7 +18,7 @@ export default function AdminPackage() {
             setRedirect('/admin/login');
         }
 
-        axios.get('/admin/allpackages').then(({ data }) => {
+        axios.get(import.meta.env.VITE_ADMIN_AP_GET_ALLPACKAGES).then(({ data }) => {
             const formattedPackages = data.map((packagee, index) => ({
                 id: index + 1,
                 title: packagee.title,

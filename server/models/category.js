@@ -5,6 +5,8 @@ const categorySchema = new mongoose.Schema({
     photos: [String],
     description: [String],
     status: { type: Boolean, default: true },
+}, {
+    timestamps: true
 })
 
 const Category = mongoose.model('Category', categorySchema);

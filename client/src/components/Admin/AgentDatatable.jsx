@@ -17,7 +17,7 @@ export default function AgentDatatables({ rows, setUpdate }) {
             confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/blockagent', { email })
+                axios.patch(import.meta.env.VITE_ADMIN_AD_BLOCKAGENTS, { email })
                     .then((response) => {
                         Swal.fire(
                             'Blocked!',
@@ -50,7 +50,7 @@ export default function AgentDatatables({ rows, setUpdate }) {
             confirmButtonText: 'Yes, UnBlock!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/unblockagent', { email })
+                axios.patch(import.meta.env.VITE_ADMIN_AD_UNBLOCKAGENTS, { email })
                     .then((response) => {
                         Swal.fire(
                             'UnBlocked!',

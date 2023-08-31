@@ -3,6 +3,7 @@ import AgentNav from "../../components/Agent/AgentNav";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, reset } from '../../redux/slices/agent/agentSlice'
 import { useState, useEffect } from "react";
+import AgentProfile from "../../components/Agent/AgentProfileUpdate"
 
 export default function AccountProfile() {
     const [redirect, setRedirect] = useState(null);
@@ -15,7 +16,7 @@ export default function AccountProfile() {
         if (!agent) {
             setRedirect('/agent/login');
         }
-    }, [ ]);
+    }, []);
 
     if (redirect) {
         return <Navigate to={redirect} />;
@@ -25,21 +26,18 @@ export default function AccountProfile() {
     if (updatedSubpage === undefined) {
         updatedSubpage = 'profile';
     }
-
+ 
     async function logoff() {
         dispatch(logout());
         dispatch(reset());
     }
-
-
 
     return (
         <div>
             <AgentNav />
             {updatedSubpage === 'profile' && agent && (
                 <div className="text-center max-w-lg mx-auto ">
-                    Logged in as {agent.name}<br />
-                    <button onClick={logoff} className="primary max-w-sm mt-2">Logout</button>
+                    <AgentProfile />
                 </div>
             )}
         </div>
