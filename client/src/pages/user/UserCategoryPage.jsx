@@ -12,11 +12,10 @@ export default function UserCategoryPage() {
   const [places, setPlaces] = useState([]);
 
   useEffect(() => {
-    axios.get('/categoryselected/' + id).then((response) => {
+    axios.get(import.meta.env.VITE_USER_UCP_CATEGORY_SELECTED + id).then((response) => {
       setPlaces(response.data);
     })
   }, [])
-
 
 
   return (

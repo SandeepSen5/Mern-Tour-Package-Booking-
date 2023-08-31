@@ -4,15 +4,17 @@ import { Navigate } from "react-router-dom";
 import UserNav from "../../components/User/UserNav";
 import { useEffect } from "react";
 import { logout, reset } from '../../redux/slices/user/userSlice';
-
+import VerticalTabs from "../../components/User/ProfileUpdate";
+import axios from "axios";
 export default function AccountPage() {
 
     const [redirectlogin, setRedirectlogin] = useState(null)
     const [redirect, setRedirect] = useState(null)
+
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.user)
 
-
+   
 
     if (redirectlogin) {
         return <Navigate to={redirect} />;
@@ -31,10 +33,14 @@ export default function AccountPage() {
     return (
         <div>
             <UserNav />
-            {user && (
+            {/* {user && (
                 <div className="text-center max-w-lg mx-auto ">
                     Logged in as {user.name}({user.email})<br />
-                    <button onClick={logoff} className="primary max-w-sm mt-2">Logout</button>
+                </div>
+            )} */}
+            {user && (
+                <div className="my-4 max-w-lg mx-auto ">
+                    <VerticalTabs />
                 </div>
             )}
             {!user &&

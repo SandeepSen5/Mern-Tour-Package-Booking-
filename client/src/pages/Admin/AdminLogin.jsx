@@ -33,7 +33,7 @@ export default function LoginPage() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { admin} = useSelector((state) => state.auth);
+    const { admin, adminmessage } = useSelector((state) => state.auth);
 
     useEffect(() => {
         if (admin) {
@@ -42,7 +42,8 @@ export default function LoginPage() {
     }, [admin]);
 
     if (redirect) {
-        return <Navigate to={redirect} />;
+        console.log("1212");
+        navigate(redirect);
     }
 
     const notify = (error) => toast.info(error, {
@@ -56,6 +57,12 @@ export default function LoginPage() {
         theme: "colored",
     });
 
+    useEffect(() => {
+
+        if (adminmessage) {
+            notify(adminmessage);
+        }
+    }, [adminmessage]);
 
     async function handleLogin(ev) {
         ev.preventDefault();

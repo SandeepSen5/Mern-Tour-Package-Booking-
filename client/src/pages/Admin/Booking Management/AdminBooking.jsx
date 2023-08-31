@@ -20,7 +20,7 @@ export default function AdminBooking() {
             setRedirect('/admin/login');
         }
 
-        axios.get('/admin/allorders').then(({ data }) => {
+        axios.get(import.meta.env.VITE_ADMIN_AB_GET_ALLORDERS).then(({ data }) => {
             const formattedOrders = data.map((order, index) => (
                 {
                     id: index + 1,
@@ -39,7 +39,7 @@ export default function AdminBooking() {
         })
 
     }, [update]);
-
+    console.log(orders, "show")
     if (redirect) {
         return <Navigate to={redirect} />;
     }

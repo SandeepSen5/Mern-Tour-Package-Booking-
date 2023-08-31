@@ -6,9 +6,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import Swal from 'sweetalert2'
 
-export default function Datatables({ rows ,setUpdate}) {
+export default function Datatables({ rows, setUpdate }) {
 
-    
+
 
     const Blockuser = (email) => {
         Swal.fire({
@@ -21,7 +21,7 @@ export default function Datatables({ rows ,setUpdate}) {
             confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/blockuser', { email })
+                axios.patch(import.meta.env.VITE_ADMIN_DT_BLOCKUSERS, { email })
                     .then((response) => {
                         Swal.fire(
                             'Blocked!',
@@ -53,7 +53,7 @@ export default function Datatables({ rows ,setUpdate}) {
             confirmButtonText: 'Yes, UnBlock!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/unblockuser', { email })
+                axios.patch(import.meta.env.VITE_ADMIN_DT_UNBLOCKUSERS, { email })
                     .then((response) => {
                         Swal.fire(
                             'UnBlocked!',

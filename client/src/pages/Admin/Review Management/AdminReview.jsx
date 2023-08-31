@@ -18,11 +18,11 @@ export default function AdminReview() {
             setRedirect('/admin/login');
         }
 
-        axios.get('/admin/allreviews').then(({ data }) => {
+        axios.get(import.meta.env.VITE_ADMIN_AR_GET_ALLREVIEWS).then(({ data }) => {
 
             const formattedReviews = data.map((review, index) => ({
                 id: index + 1,
-                keyid:review._id,
+                keyid: review._id,
                 name: review.owner.name,
                 Package: review.place.title,
                 comment: review.desc,

@@ -16,7 +16,7 @@ export default function PackageDatatables({ rows, setUpdate }) {
             confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/blockpackage', { title })
+                axios.patch(import.meta.env.VITE_ADMIN_PD_BLOCK_PACKAGES, { title })
                     .then((response) => {
                         Swal.fire(
                             'Blocked!',
@@ -47,7 +47,7 @@ export default function PackageDatatables({ rows, setUpdate }) {
             confirmButtonText: 'Yes, UnBlock!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/unblockpackage', { title })
+                axios.patch(import.meta.env.VITE_ADMIN_PD_UNBLOCK_PACKAGES, { title })
                     .then((response) => {
                         Swal.fire(
                             'UnBlocked!',

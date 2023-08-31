@@ -64,5 +64,16 @@ router.patch('/blockreview', adminControllers.blockReview)
 
 router.patch('/unblockreview', adminControllers.unblockReview)
 
+router.get('/getusercounts', adminControllers.getCounts)
+
+router.get('/getagentcounts', adminControllers.getAgents)
+
+router.get('/getordercount', adminControllers.getOrdercount)
+
+router.get('/getearnings', adminControllers.getEarnings)
+
+router.get('/getpiedetails', adminControllers.getPieDeatails)
+
+router.get('/salesreport', adminControllers.getSalesReport)
 
 module.exports = router;

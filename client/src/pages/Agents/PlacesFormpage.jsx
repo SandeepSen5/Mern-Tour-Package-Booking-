@@ -41,7 +41,7 @@ export default function PlacesFormpage() {
             setRedirectlogin('/agent/login');
         }
 
-        axios.get('/agent/allcategory').then((response) => {
+        axios.get(import.meta.env.VITE_AGENT_PF_AGENT_GETALL_CATEGORY).then((response) => {
             SetAllcategory(response.data)
         })
 
@@ -49,7 +49,7 @@ export default function PlacesFormpage() {
             return;
         }
 
-        axios.get('/agent/places/' + id).then((response) => {
+        axios.get(import.meta.env.VITE_AGENT_PF_AGENT_GET_ADDEDPLACE + id).then((response) => {
             const { data } = response;
             setTitle(data.title);
             setAddress(data.address);
@@ -92,7 +92,7 @@ export default function PlacesFormpage() {
 
     async function AddPhotoByLink(ev) {
         ev.preventDefault();
-        const { data } = await axios.post('/agent/uploadbyLink', { Link: photosLink })
+        const { data } = await axios.post(import.meta.env.VITE_AGENT_PF_AGENT_GET_ADDPHOTO_BYURL, { Link: photosLink })
         console.log(data, "datadatadata")
         setAddedPhotos((prev) => {
             return [...prev, ...data];
@@ -106,7 +106,7 @@ export default function PlacesFormpage() {
         for (let i = 0; i < files.length; i++) {
             data.append('photos', files[i]);
         }
-        axios.post('/agent/upload', data, {
+        axios.post(import.meta.env.VITE_AGENT_PF_AGENT_GET_ADDPHOTOUPLOAD, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -149,7 +149,7 @@ export default function PlacesFormpage() {
         }
         if (id) {
             try {
-                await axios.put('/agent/updateplaces', {
+                await axios.put(import.meta.env.VITE_AGENT_PF_AGENT_GET_UPDATE_ADDEDPLACE, {
                     id, ...placedata
                 });
                 setRedirect(true)
@@ -160,7 +160,7 @@ export default function PlacesFormpage() {
         }
         else {
             try {
-                await axios.post('/agent/addplaces',
+                await axios.post(import.meta.env.VITE_AGENT_PF_AGENT_GET_ADD_NEWPLACE,
                     placedata
                 );
                 setRedirect(true)

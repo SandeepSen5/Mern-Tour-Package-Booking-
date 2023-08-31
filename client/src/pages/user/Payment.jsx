@@ -1,4 +1,6 @@
 import { loadStripe } from "@stripe/stripe-js";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { Elements } from "@stripe/react-stripe-js";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -11,12 +13,24 @@ import CheckoutForm from "../../components/User/CheckoutForm";
 
 const stripePromise = loadStripe("pk_test_51Nci8ASGZJukKXvUderxBN1Bd6hKdafbxX9xDQo3v6emN6nu2Jvs5leULXV0GFy1OyziysnGvM4Hj5w7u3df7jdw00azWYME7E");
 
+const notify = (msg) => toast.info(msg, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+});
+
 export default function Payment() {
 
     const { id } = useParams();
     const [clientSecret, setClientSecret] = useState("");
     const [bookingdetails, setBookingdetails] = useState('');
     const [redirect, setRedirect] = useState('');
+    const [redirectsucess, setRedirecttosucess] = useState('');
     const { user } = useSelector((state) => state.user);
     const bookingDate = new Date(bookingdetails.bookin);
 
@@ -24,7 +38,7 @@ export default function Payment() {
         if (!user) {
             setRedirect('/');
         }
-        axios.get('/bookingdetails/' + id).then((response) => {
+        axios.get(import.meta.env.VITE_USER_PM_MYBOOKINGSDETAILS + id).then((response) => {
             setBookingdetails(response.data);
         })
     }, [])
@@ -34,10 +48,24 @@ export default function Payment() {
     }
 
     async function confirmThis() {
-        axios.post(`/create-payment-intent/${id}`, null, { cache: false }).then((response) => {
+        axios.post(import.meta.env.VITE_USER_PM_MYBOOKINGSORDER_INTENT + `${id}`, null, { cache: false }).then((response) => {
             console.log(1);
             setClientSecret(response.data.clientSecret)
         })
+    }
+
+    async function cod() {
+        try {
+            await axios.post('/codorder/' + `${id}`, null, { cache: false })
+            setRedirecttosucess('/sucess');
+        }
+        catch (err) {
+            notify(err.response.data);
+        }
+    }
+
+    if (redirectsucess) {
+        return <Navigate to={redirectsucess} />;
     }
 
     const appearance = {
@@ -48,7 +76,7 @@ export default function Payment() {
         clientSecret,
         appearance,
     };
-    
+
     return (
         <div className="App">
             <UserNav />
@@ -60,8 +88,13 @@ export default function Payment() {
                     {isValid(bookingDate) && (
                         <h2 className="mt-2">Booking Date On: {format(bookingDate, 'yyyy-MM-dd')}</h2>
                     )}
-                    <div>
-                        <button onClick={confirmThis} className="primary mt-4"> Confirm Bookings</button>
+                    <h2 className="mt-5 font-semibold text-center">Make Your Payments through</h2>
+                    <div className=" flex justify-center">
+                        <button onClick={confirmThis} className="mt-4 mx-auto p-2 rounded-2xl"> Online Payments</button>
+                    </div>
+                    <h2 className="mt-5 font-semibold text-center">OR</h2>
+                    <div className=" flex justify-center">
+                        <button onClick={cod} className=" mt-4 p-2 rounded-2xl"> Wallet Purchase</button>
                     </div>
                 </div>
                 <div>
@@ -72,6 +105,7 @@ export default function Payment() {
                     )}
                 </div>
             </div>
+            <ToastContainer />
         </div>
 
     )

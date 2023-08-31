@@ -9,7 +9,9 @@ const ReviewSchema = new Schema({
     place: { type: mongoose.Schema.Types.ObjectId, ref: 'Place' },
     desc: String,
     status: { type: Boolean, default: true },
-})
+}, {
+    timestamps: true
+});
 
 const ReviewModel = mongoose.model('Review', ReviewSchema);
 module.exports = ReviewModel;

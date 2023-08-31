@@ -17,7 +17,7 @@ export default function CategoryPage() {
             setRedirect('/admin/login');
         }
 
-        axios.get('/admin/getcategory').then(({ data }) => {
+        axios.get(import.meta.env.VITE_ADMIN_CP_GETALL_CATEGORY).then(({ data }) => {
             const formattedCategory = data.map((category, index) => ({
                 id: index + 1,
                 title: category.title,

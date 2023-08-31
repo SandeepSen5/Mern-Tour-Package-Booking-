@@ -15,6 +15,8 @@ const placeSchema = new mongoose.Schema({
     extraInfo: [String],
     cancelInfo: [String],
     status: { type: Boolean, default: true },
+}, {
+    timestamps: true
 });
 
 const Place = mongoose.model('Place', placeSchema);

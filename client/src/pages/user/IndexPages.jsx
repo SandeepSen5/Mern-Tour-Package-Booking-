@@ -14,7 +14,7 @@ export default function IndexPages() {
   console.log(maxPrice, "priceeeeeeeeeeeeeeeeeee");
 
   useEffect(() => {
-    axios.get('/places').then((response) => {
+    axios.get(import.meta.env.VITE_USER_AP_ALLPLACES ).then((response) => {
       setPlaces(response.data);
 
     })

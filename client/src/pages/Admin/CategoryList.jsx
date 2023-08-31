@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -13,7 +15,18 @@ export default function CategoryList() {
     const [description, setDescription] = useState('');
     const [addedPhotos, setAddedPhotos] = useState([]);
     const [redirect, setRedirect] = useState(null);
-    const { admin } = useSelector((state) => state.auth)
+    const { admin } = useSelector((state) => state.auth);
+
+    const notify = (error) => toast.info(error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+    });
 
     useEffect(() => {
 
@@ -25,7 +38,7 @@ export default function CategoryList() {
             return;
         }
 
-        axios.get(`/admin/categoryEditid?id=${encodeURIComponent(id)}`)
+        axios.get(import.meta.env.VITE_ADMIN_CL_SINGLECAT_FOREDIT + `id=${encodeURIComponent(id)}`)
             .then((response) => {
                 console.log(response.data);
                 setTitle(response.data.title)
@@ -45,7 +58,7 @@ export default function CategoryList() {
         for (let i = 0; i < files.length; i++) {
             data.append('photos', files[i]);
         }
-        axios.post('/admin/upload', data, {
+        axios.post(import.meta.env.VITE_ADMIN_CL_UPLOAD_CATPHOTO, data, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
@@ -69,17 +82,21 @@ export default function CategoryList() {
             title, addedPhotos, description,
         }
         if (id) {
-            await axios.put('/admin/updatecategory', {
+            await axios.put(import.meta.env.VITE_ADMIN_CL_UPDATE_CATEGORY, {
                 id, ...placedata
             });
             navigate('/admin/category');
         }
         else {
-            console.log(title, description, addedPhotos)
-            await axios.post('/admin/addcategory',
-                placedata
-            );
-            navigate('/admin/category');
+            try {
+                await axios.post(import.meta.env.VITE_ADMIN_CL_ADDNEW_CATEGORY,
+                    placedata
+                );
+                navigate('/admin/category');
+            }
+            catch (error) {
+                notify(error.response.data);
+            }
         }
     }
 
@@ -120,6 +137,7 @@ export default function CategoryList() {
                     <button className=" mt-4 p-4 rounded-2xl">Save</button>
                 </div>
             </form>
+            <ToastContainer />
         </div>
     )
 }

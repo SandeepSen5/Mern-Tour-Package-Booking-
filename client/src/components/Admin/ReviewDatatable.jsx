@@ -18,7 +18,7 @@ export default function ReviewDatatable({ rows, setUpdate }) {
             confirmButtonText: 'Yes, Block!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/blockreview', { keyid })
+                axios.patch(import.meta.env.VITE_ADMIN_RD_BLOCK_REVIEW, { keyid })
                     .then((response) => {
                         Swal.fire(
                             'Blocked!',
@@ -50,7 +50,7 @@ export default function ReviewDatatable({ rows, setUpdate }) {
             confirmButtonText: 'Yes, UnBlock!'
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.patch('/admin/unblockreview', { keyid })
+                axios.patch(import.meta.env.VITE_ADMIN_RD_UNBLOCK_REVIEW, { keyid })
                     .then((response) => {
                         Swal.fire(
                             'UnBlocked!',

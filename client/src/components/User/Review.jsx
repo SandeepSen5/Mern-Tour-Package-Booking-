@@ -23,7 +23,7 @@ export default function FormDialog({ packageid, ownerid }) {
 
     const handleReviewSubmit = async () => {
         console.log("Submitted Review:", reviewText);
-        axios.post('/addreview', { packageid, ownerid, reviewText }).then(() => {
+        axios.post(import.meta.env.VITE_USER_R_ADDREVIEW, { packageid, ownerid, reviewText }).then(() => {
             console.log('success');
         })
         handleClose();

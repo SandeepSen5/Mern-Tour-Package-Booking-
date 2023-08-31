@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
 const bcrypt = require('bcryptjs')
 const bcryptSalt = bcrypt.genSaltSync(10);
 const jwt = require('jsonwebtoken');
@@ -10,13 +11,19 @@ const Category = require('../models/category');
 const Place = require('../models/place');
 const Order = require('../models/order');
 const Review = require('../models/review');
+const Slot = require('../models/slot');
 const createError = require('../utils/createError');
 require('dotenv').config();
 
 
 exports.adminLogin = async (req, res, next) => {
     const { email, password } = req.body;
-    const AdminDoc = await Admin.findOne({ email })
+    const AdminDoc = await Admin.findOne({ email });
+
+    if (!AdminDoc) {
+        return next(createError(404, "Enter Valid Credential"))
+    }
+
     if (AdminDoc) {
         const passok = bcrypt.compareSync(password, AdminDoc.password);
         console.log(passok)
@@ -26,12 +33,13 @@ exports.adminLogin = async (req, res, next) => {
                 res.cookie('Admintoken', token).json(AdminDoc)
             })
         } else {
-            return next(createError(400, "IncorrectPassword"));
+            return next(createError(400, "Incorrect Password"));
         }
     } else {
-        return next(createError(404, "Incorrect UserId"))
+        return next(createError(404, "Enter Credential"))
     }
 }
+
 
 exports.allUsers = async (req, res, next) => {
     try {
@@ -128,11 +136,21 @@ exports.addCategory = async (req, res, next) => {
     try {
         const { title, addedPhotos, description,
         } = req.body;
+        const requiredFields = [title, description];
+
+        if (requiredFields.some(field => !field)) {
+            return next(createError(400, "All required fields must be filled."))
+        }
+
+        if (addedPhotos.length < 0) {
+            return next(createError(400, "Add Photo"))
+        }
+
         const categoryDoc = await Category.create({
             title, photos: addedPhotos,
             description,
         })
-        console.log(categoryDoc, "jsdjjfjhsdhh")
+
         res.json(categoryDoc);
     }
     catch (err) {
@@ -269,6 +287,22 @@ exports.bookingStatus = async (req, res, next) => {
     try {
         const { id, status } = req.body;
         console.log(id, status);
+        const orderDeatials = await Order.findById(id);
+        const no = parseInt(orderDeatials.guestno);
+        const formattedBookinoutDate = orderDeatials.bookin.toISOString().split('T')[0];
+
+        if (status == 'Pending') {
+            await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: + no } });
+        }
+
+        if (status == 'Cancelled') {
+            await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: - no } });
+        }
+
+        if (status == 'Success') {
+            await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: - no } });
+        }
+
         const orderDoc = await Order.findByIdAndUpdate(id, {
             $set: {
                 deliverystatus: status
@@ -321,5 +355,132 @@ exports.unblockReview = async (req, res, next) => {
         next(err);
     }
 }
+
+
+exports.getCounts = async (req, res, next) => {
+    try {
+        const userCount = await User.countDocuments();
+        res.status(200).json(userCount);
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+exports.getAgents = async (req, res, next) => {
+    try {
+        const agentCount = await Agent.countDocuments();
+        res.status(200).json(agentCount);
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+exports.getOrdercount = async (req, res, next) => {
+    try {
+        const successOrPendingOrderCount = await Order.countDocuments({
+            $or: [{ deliverystatus: 'Success' }, { deliverystatus: 'Pending' }]
+        });
+        res.status(200).json(successOrPendingOrderCount);
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+
+exports.getEarnings = async (req, res, next) => {
+    try {
+        const pipeline = [
+            // {
+            //     $match: {
+            //         deliverystatus: { $ne: "Cancelled" }
+            //     }
+            // },
+            {
+                $group: {
+                    _id: null,
+                    totalSum: { $sum: "$total" }
+                }
+            }
+        ];
+
+        const result = await Order.aggregate(pipeline);
+
+        if (result.length > 0) {
+            const totalSum = result[0].totalSum;
+            res.status(200).json(totalSum);
+        } else {
+            res.status(200).json({ totalSum: 0 });
+        }
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+exports.getPieDeatails = async (req, res, next) => {
+    try {
+        const pipeline = [
+            {
+                $group: {
+                    _id: "$deliverystatus",
+                    count: { $sum: 1 }
+                }
+            }
+        ];
+        const statusCounts = await Order.aggregate(pipeline);
+
+        const formattedResult = statusCounts.map(status => ({
+            name: status._id,
+            value: status.count
+        }));
+
+        if (statusCounts) {
+            res.status(200).json(formattedResult);
+        }
+    }
+    catch (err) {
+        next(err);
+    }
+}
+
+
+
+exports.getSalesReport = async (req, res, next) => {
+
+    try {
+
+        const orders = await Order.find();
+
+        function getMonthFromDate(date) {
+            const parsedDate = new Date(date);
+            return parsedDate.getMonth();
+        }
+
+        const monthlySales = Array.from({ length: 12 }, (_, monthIndex) => {
+            return {
+                // name: moment().month(monthIndex).format('MMMM'),
+                name: moment().month(monthIndex).format('MMM'),
+                value: 0,
+            };
+        });
+
+
+        orders.forEach(order => {
+            const monthIndex = getMonthFromDate(order.createdAt);
+            monthlySales[monthIndex].value += order.total;
+        });
+
+        res.json(monthlySales);
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+
+
 
 

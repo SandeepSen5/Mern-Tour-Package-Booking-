@@ -11,12 +11,12 @@ export default function AdminAgent() {
     const [update, setUpdate] = useState(false);
 
     useEffect(() => {
-        
+
         if (!admin) {
             setRedirect('/admin/login');
         }
 
-        axios.get('/admin/agents').then(({ data }) => {
+        axios.get(import.meta.env.VITE_ADMIN_AA_GETAGENTS).then(({ data }) => {
             console.log(data, "userssssssssssssssssss");
             const formattedUsers = data.map((user, index) => ({
                 id: index + 1,

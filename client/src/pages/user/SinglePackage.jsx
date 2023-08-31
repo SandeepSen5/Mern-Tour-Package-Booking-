@@ -5,9 +5,10 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useSelector } from 'react-redux';
-import UserNav from "../../components/User/UserNav"
+import UserNav from "../../components/User/UserNav";
 import axios from "axios";
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import AnchorElTooltips from "../../components/User/BookingWarning";
 
 const userSchema = yup.object().shape({
     name: yup.string().required("Name is required").trim(), // Adding .trim() to remove leading/trailing whitespaces
@@ -38,19 +39,23 @@ export default function SinglePackage() {
     const [reviews, setReviews] = useState('')
     const [update, setUpdate] = useState(false);
     const [errors, setErrors] = useState({});
+    const [slots, setSlots] = useState('')
     const { user } = useSelector((state) => state.user);
     console.log(user, "usersssssssssss")
-
+    console.log(bookin, "bookin")
     useEffect(() => {
         if (!id) {
             return;
         }
-        axios.get(`/allreviews/${id}`).then((response) => {
+        axios.get(import.meta.env.VITE_USER_SP_ALLREVIEWS + `${id}`).then((response) => {
             setReviews(response.data);
         })
-        axios.get(`/place/${id}`).then((response) => {
+        axios.get(import.meta.env.VITE_USER_SP_SINGLEPLACE + `${id}`).then((response) => {
             setPlace(response.data);
         });
+        axios.get('/getslots/' + id).then((response) => {
+            setSlots(response.data)
+        })
 
     }, [id, update])
 
@@ -76,7 +81,7 @@ export default function SinglePackage() {
                 bookin, guestno, name, email, phone,
                 place: place._id, price: place.price
             }
-            await axios.post('/bookings', data)
+            await axios.post(import.meta.env.VITE_USER_SP_BOOKED, data)
                 .then((response) => {
                     setRedirect(`/payment/${response.data._id}`);
                 })
@@ -92,7 +97,6 @@ export default function SinglePackage() {
                 notify(error.response.data);
             }
         }
-
     }
 
     if (redirect) {
@@ -145,6 +149,13 @@ export default function SinglePackage() {
         })
     }
 
+    const bookedDates = slots.map(slot => {
+        return {
+            start: new Date(slot.bookin).toISOString().split('T')[0],
+            end: new Date(slot.bookout).toISOString().split('T')[0]
+        };
+    });
+
     return (
         <div>
             <UserNav />
@@ -195,14 +206,26 @@ export default function SinglePackage() {
                             </label>
                         ))}
                     </div>
-                    {user && <div className="bg-white shadow p-4 rounded-2xl">
+                    {user && <div className="bg-white shadow p-4 rounded-2xl relative">
                         <div className="text-2xl text-center">
                             Price :  ₹{place.price} / person
                         </div>
+                        <div className='absolute right-0 top-0'>
+                            <AnchorElTooltips />
+                        </div>
                         <div className="flex grid grid-cols-2">
                             <div className="my-4 border px-2 py-2 ">
-                                <label> Book  in    :</label>
-                                <input type="date" value={bookin} onChange={(ev) => { setBookin(ev.target.value) }} />
+                                <label> Book in:</label>
+                                <input
+                                    type="date"
+                                    value={bookin}
+                                    onChange={(ev) => setBookin(ev.target.value)}
+                                    style={{
+                                        backgroundColor: bookedDates.some(dateRange => dateRange.start <= bookin && bookin <= dateRange.end)
+                                            ? 'lightcoral'
+                                            : ''
+                                    }}
+                                />
                             </div>
                             <div className="my-4 border px-2 py-2 ">
                                 <label> Max Persons   :</label>
@@ -264,10 +287,31 @@ export default function SinglePackage() {
                         )
                     })}
                 </div>
+                <div className="mt-4 p-4 rounded-2xl">
+                    <h1 className="text-3xl mb-4 font-semibold ">Agent Info</h1>
+                    <div className=" flex cursor-pointer gap-4  mb-6 relative">
+                        <div className="grow-0 shrink relative">
+                            <div className="flex gap-2 mb-3 items-center ">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-7 h-7">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <h2 className="text-xl  ">
+                                    Name:  {place.owner.name}</h2>
+                            </div>
+                            <p className="text-sm  mx-9">Phone : {place.owner.number}</p>
+                        </div>
+                        <div className='absolute right-0'>
+                            <Link to={`/contact/${place.owner._id}`}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 011.037-.443 48.282 48.282 0 005.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                                </svg>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
             </div>
             <ToastContainer />
         </div>
-
     )
 }
 

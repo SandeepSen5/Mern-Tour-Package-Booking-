@@ -22,7 +22,7 @@ export default function Success() {
         }
         const makeRequest = async () => {
             try {
-                await axios.put('/order', { payment_intent });
+                await axios.put(import.meta.env.VITE_USER_SS_ORDERSUCCESS_UPDATE, { payment_intent });
                 <Navigate to={'/'} />
             }
             catch (e) {

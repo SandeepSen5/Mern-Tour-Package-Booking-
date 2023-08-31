@@ -19,7 +19,7 @@ export default function AdminUser() {
             setRedirect('/admin/login');
         }
 
-        axios.get('/admin/users').then(({ data }) => {
+        axios.get(import.meta.env.VITE_ADMIN_AU_GETUSERS).then(({ data }) => {
             console.log(data, "userssssssssssssssssss");
             const formattedUsers = data.map((user, index) => ({
                 id: index + 1,
