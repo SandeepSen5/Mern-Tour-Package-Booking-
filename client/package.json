@@ -25,6 +25,7 @@
     "firebase": "^10.3.0",
     "gapi-script": "^1.2.0",
     "infinite-react-carousel": "^1.2.11",
+    "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "postcss": "^8.4.27",
     "react": "^18.2.0",

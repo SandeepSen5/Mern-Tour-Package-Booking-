@@ -11,7 +11,7 @@ const verifyToken = async (req, res, next) => {
         req.userEmailId = userData.email;
         next();
     })
-}     //userData contains the emailid and id of that user(document id of users collection)
+}     //userData contains the emailid and id of that user(document id of users collection)rollbasedauthorization
 
 module.exports = verifyToken;
 
