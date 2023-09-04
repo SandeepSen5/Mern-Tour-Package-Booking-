@@ -5,7 +5,8 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import Review from "../../components/User/Review";
 import TourCancel from "../../components/User/TourCancel";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import BillGenerate from "../../components/User/BillGenereate";
 
 export default function BookingList() {
 
@@ -32,13 +33,14 @@ export default function BookingList() {
             <UserNav />
             <div className=" mx-auto  mt-8 md:mx-1 md:mt-4">
                 {bookings.map(booking => (
-                    <div key={booking.id} className="mb-4 p-4 bg-gray-100 rounded-lg">
+                    <div key={booking.id} className="mb-4 p-4 bg-gray-100 rounded-lg relative">
                         <div className="flex flex-col md:flex-row ">
                             {booking.place?.photos?.length > 0 &&
                                 <div className="w-full md:w-48">
                                     <img className="object-cover w-48 h-48  rounded-lg" src={"http://localhost:4000/uploads/" + booking.place.photos[0]} alt="Place" />
                                 </div>
                             }
+
                             <div className="flex flex-col md:flex-row gap-3 md:items-center md:flex-1">
                                 <div className="flex-2 ">
                                     <h2 className="text-xl mt-2 md:mt-0">{booking.place.title}</h2>
@@ -68,7 +70,21 @@ export default function BookingList() {
                                 </div>
                             </div>
                         </div>
+                        <div className="absolute right-3 top-3">
+                            <Link to={`/bookings/${booking._id}`}>
+                                {booking.deliverystatus !== 'Cancelled' &&
+                                    <div className="inline-flex">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                        </svg>
+                                        Bill
+                                    </div>
+                                }
+                            </Link>
+
+                        </div>
                     </div>
+
                 ))}
             </div>
         </div>

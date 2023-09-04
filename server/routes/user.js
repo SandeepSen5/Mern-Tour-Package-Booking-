@@ -29,6 +29,8 @@ router.post('/codorder/:id', verifyToken, userController.updateCodOrder)
 
 router.get('/mybookings', verifyToken, userController.myBookings)
 
+router.get('/bookingbill/:id', userController.myBookingBill)
+
 router.get('/allcategory', userController.getCategory)
 
 router.post('/addreview', userController.addReview)

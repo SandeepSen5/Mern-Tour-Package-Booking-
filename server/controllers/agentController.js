@@ -44,7 +44,7 @@ exports.agentLogin = async (req, res, next) => {
         }
 
         if (!AgentDoc.status) {
-            return next(createError(400, "Agent Blocked"))
+            return next(createError(400, "Grant  Login Permission"))
         }
 
         if (AgentDoc) {
@@ -66,6 +66,7 @@ exports.agentLogin = async (req, res, next) => {
     }
 }
 
+
 exports.agentLogout = (req, res, next) => {
     try {
         res.cookie('token', '').json(true);
@@ -73,7 +74,6 @@ exports.agentLogout = (req, res, next) => {
     catch (err) {
         next(err);
     }
-
 }
 
 

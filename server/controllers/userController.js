@@ -345,6 +345,22 @@ exports.myBookings = async (req, res, next) => {
 }
 
 
+exports.myBookingBill = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        console.log(id);
+        const billDetail = await Order.findById(id).populate({
+            path: 'place',  
+            model: 'Place',
+        });
+        console.log(billDetail);
+        res.status(200).json(billDetail);
+    }
+    catch (err) {
+        next(err)
+    }
+}
+
 
 exports.getCategory = async (req, res, next) => {
     try {

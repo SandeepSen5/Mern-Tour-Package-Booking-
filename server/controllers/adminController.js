@@ -288,19 +288,26 @@ exports.bookingStatus = async (req, res, next) => {
         const { id, status } = req.body;
         console.log(id, status);
         const orderDeatials = await Order.findById(id);
+        const amt = parseInt(orderDeatials.total);
         const no = parseInt(orderDeatials.guestno);
+        const userID = orderDeatials.owner.toString();
         const formattedBookinoutDate = orderDeatials.bookin.toISOString().split('T')[0];
 
         if (status == 'Pending') {
-            await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: + no } });
+            const slotDoc = await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: + no } });
+            console.log(slotDoc, "const slotDoc=const slotDoc=const slotDoc=");
         }
 
         if (status == 'Cancelled') {
-            await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: - no } });
+            const slotDoc = await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: - no } });
+            console.log(slotDoc, "const slotDoc=const slotDoc=const slotDoc=");
+            const user = await User.findByIdAndUpdate(userID, { $inc: { wallet: amt } }, { new: true });
+            console.log(user, orderDeatials.owner, "haiiiii");
         }
 
         if (status == 'Success') {
-            await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: - no } });
+            const slotDoc = await Slot.findOneAndUpdate({ place: orderDeatials.place, bookin: formattedBookinoutDate }, { $inc: { count: - no } });
+            console.log(slotDoc, "const slotDoc=const slotDoc=const slotDoc=");
         }
 
         const orderDoc = await Order.findByIdAndUpdate(id, {
@@ -380,7 +387,7 @@ exports.getAgents = async (req, res, next) => {
 exports.getOrdercount = async (req, res, next) => {
     try {
         const successOrPendingOrderCount = await Order.countDocuments({
-            $or: [{ deliverystatus: 'Success' }, { deliverystatus: 'Pending' }]
+            $or: [{ deliverystatus: 'Success' }, { deliverystatus: 'Pending' }, { deliverystatus: 'Cancelled' }]
         });
         res.status(200).json(successOrPendingOrderCount);
     }

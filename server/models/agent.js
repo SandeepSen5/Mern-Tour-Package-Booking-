@@ -6,7 +6,7 @@ const AgentSchema = new Schema({
     email: { type: String, unique: true },
     number: Number,
     password: String,
-    status: { type: Boolean, default: true },
+    status: { type: Boolean, default: false },
     count: { type: Number, default: 15 },
 }, {
     timestamps: true

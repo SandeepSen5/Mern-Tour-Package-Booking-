@@ -35,9 +35,10 @@ import AgentChat from "./pages/Agents/AgentChat";
 import Error from "./pages/ErrorPage/Error";
 import AgentError from "./pages/ErrorPage/AgentError";
 import AdminError from "./pages/ErrorPage/AdminError";
+import BillGenerate from "./components/User/BillGenereate";
 axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.withCredentials = true;
-
+//interceptor instance
 function App() {
   return (
     <Routes>
@@ -54,6 +55,7 @@ function App() {
         <Route path="/success" element={<Success />} />
         <Route path="/sucess" element={<WalletSuccess />} />
         <Route path="/bookings" element={<BookingList />} />
+        <Route path='/bookings/:id' element={<BillGenerate />} />
         <Route path="/wallet" element={<Wallet />} />
         <Route path="/account/:subpage?" element={<Account />} />
         <Route path="/account/:subpage/:action" element={<Account />} />

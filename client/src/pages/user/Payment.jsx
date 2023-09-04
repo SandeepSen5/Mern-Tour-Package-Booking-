@@ -53,7 +53,7 @@ export default function Payment() {
             setClientSecret(response.data.clientSecret)
         })
     }
-
+console.log(clientSecret,"clientSecretclientSecretclientSecretclientSecretclientSecret");
     async function cod() {
         try {
             await axios.post('/codorder/' + `${id}`, null, { cache: false })
@@ -107,7 +107,6 @@ export default function Payment() {
             </div>
             <ToastContainer />
         </div>
-
     )
 }
 
