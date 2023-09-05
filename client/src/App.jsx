@@ -36,7 +36,7 @@ import Error from "./pages/ErrorPage/Error";
 import AgentError from "./pages/ErrorPage/AgentError";
 import AdminError from "./pages/ErrorPage/AdminError";
 import BillGenerate from "./components/User/BillGenereate";
-axios.defaults.baseURL = 'https://16.170.231.183';
+axios.defaults.baseURL = 'http://16.170.231.183';
 axios.defaults.withCredentials = true;
 //interceptor instance
 function App() {
