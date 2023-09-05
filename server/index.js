@@ -26,13 +26,16 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')))
 // app.use(express.static(path.join(__dirname, '/public/static')));
 
 
-app.use(cors({
-    credentials: true,
-    origin: 'http://localhost:5173',
-}));
+const corsOptions = {
+    origin: 'https://letsgo.uno', // Set to your frontend's origin
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));
+
 
 mongoose.connect(process.env.MONGO_URL)
-    .then(() => { 
+    .then(() => {
         console.log('connected')
     })
     .catch(err => console.log(err));
