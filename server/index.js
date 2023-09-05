@@ -27,8 +27,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')))
 
 
 const corsOptions = {
-    origin: 'https://letsgo.uno', // Set to your frontend's origin
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    origin: '*',
+    credentials: true,
 };
 
 app.use(cors(corsOptions));
