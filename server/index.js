@@ -28,12 +28,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')))
 
 app.use(cors({
     credentials: true,
-    origin: '*',
+    origin: 'http://localhost:5173',
 }));
 
-
 mongoose.connect(process.env.MONGO_URL)
-    .then(() => {
+    .then(() => { 
         console.log('connected')
     })
     .catch(err => console.log(err));
