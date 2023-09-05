@@ -32,7 +32,7 @@ app.use(cors({
 }));
 
 mongoose.connect(process.env.MONGO_URL)
-    .then(() => {
+    .then(() => { 
         console.log('connected')
     })
     .catch(err => console.log(err));
@@ -41,6 +41,10 @@ mongoose.connect(process.env.MONGO_URL)
 
 const buildPath = path.join(__dirname, '../client/dist');
 app.use(express.static(buildPath));
+
+app.use('/admin', adminRouter);
+app.use('/agent', agentRouter);
+app.use('/', userRouter);
 
 app.get("/*", function (req, res) {
     res.sendFile(
@@ -53,9 +57,7 @@ app.get("/*", function (req, res) {
     );
 });
 
-app.use('/admin', adminRouter);
-app.use('/agent', agentRouter);
-app.use('/', userRouter);
+
 
 app.use((err, req, res, next) => {
     const errorStatus = err.status || 500;
