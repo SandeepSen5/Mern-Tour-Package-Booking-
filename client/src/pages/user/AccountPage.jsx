@@ -48,7 +48,6 @@ export default function AccountPage() {
                     Please Login !!!
                     <h1 className="mt-4">#Travel Around The World..</h1>
                 </div>
-
             }
         </div>
     );
