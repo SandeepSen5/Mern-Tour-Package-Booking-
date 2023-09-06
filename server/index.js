@@ -26,7 +26,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')))
 // app.use(express.static(path.join(__dirname, '/public/static')));
 
 const corsOptions = {
-    origin: '*',
+    origin: 'http://www.letsgo.uno',
     credentials: true,
 };
 
