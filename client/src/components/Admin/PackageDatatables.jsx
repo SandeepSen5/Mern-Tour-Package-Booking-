@@ -76,7 +76,7 @@ export default function PackageDatatables({ rows, setUpdate }) {
             field: 'photos', headerName: 'Images', width: 130, renderCell: (params) => {
                 return (
                     <div className='userListUser'>
-                        <img className='userList' src={"http://localhost:4000/uploads/" + params.row.photos} alt='' />
+                        <img className='userList' src={"http://www.letsgo.uno/uploads/" + params.row.photos} alt='' />
                     </div>
                 )
             }

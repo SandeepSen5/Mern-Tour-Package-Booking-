@@ -37,7 +37,7 @@ export default function BookingList() {
                         <div className="flex flex-col md:flex-row ">
                             {booking.place?.photos?.length > 0 &&
                                 <div className="w-full md:w-48">
-                                    <img className="object-cover w-48 h-48  rounded-lg" src={"http://localhost:4000/uploads/" + booking.place.photos[0]} alt="Place" />
+                                    <img className="object-cover w-48 h-48  rounded-lg" src={"http://www.letsgo.uno/uploads/" + booking.place.photos[0]} alt="Place" />
                                 </div>
                             }
 
