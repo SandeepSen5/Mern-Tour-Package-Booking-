@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import AgentBookingDatatable from "../../components/Agent/AgentBookingDatatable";
+import Footer from "../../components/User/Footer";
+
 export default function AgentBookingList() {
 
 
@@ -45,10 +47,13 @@ export default function AgentBookingList() {
 
     return (
         <div >
-            <AgentNav /> 
+            <AgentNav />
             <div className="mx-10 my-10">
                 <h1 className="text-2xl font-semibold mb-8">Agent Management</h1>
-            <AgentBookingDatatable rows={orders} setUpdate={setUpdate} />
+                <AgentBookingDatatable rows={orders} setUpdate={setUpdate} />
+            </div>
+            <div>
+                <Footer />
             </div>
         </div>
     )

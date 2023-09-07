@@ -6,6 +6,7 @@ import { uniqBy } from 'lodash';
 import { useRef } from "react";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
+import Footer from "../../components/User/Footer";
 
 export default function Agentchat() {
 
@@ -155,27 +156,59 @@ export default function Agentchat() {
                     }
 
 
-                    {!!selectedUserid && (
-                        <div className="flex-grow overflow-y-scroll  p-2 my-2 rounded-2x text-sm">
-                            {messagesWithoutDupes.map(message => (
-                                <div key={message._id} className={(message.sender == agent._id ? 'text-right' : 'text-left')}>
-                                    <div className={"text-left rounded-2xl inline-block p-2 mb-2  " + (message.sender == agent._id ? 'bg-gray-200' : 'bg-gray-200')}>
-                                        {message.text}
-                                        {message.file && (
-                                            <div className="">
-                                                <a target="_blank" className="_blank underline inline-flex items-center gap-1 " href={"http://localhost:4000/uploads/" + message.file} >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 my-4">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
-                                                    </svg>{message.file}</a>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                            <div ref={messageBoxRef}></div>
+{!!selectedUserid && (
+    <div className="flex-grow overflow-y-scroll p-2 my-2 rounded-2xl text-sm">
+        {messagesWithoutDupes.map((message) => {
+            // Check if message.createdAt is a valid date
+            const createdAt = new Date(message.createdAt);
+            const isValidDate = !isNaN(createdAt.getTime());
+
+            // Check if the message contains an audio file
+            const isAudioMessage = message.file && message.file.endsWith(".mp3");
+            const isVideoMessage = message.file && message.file.endsWith(".mp4");
+            const isImageMessage =
+                message.file &&
+                (message.file.endsWith(".jpg") || message.file.endsWith(".png") || message.file.endsWith(".gif"));
+
+            return (
+                <div key={message._id} className={message.sender === agent._id ? 'text-right' : 'text-left'}>
+                    <div className={"text-left rounded-2xl inline-block p-2 mb-2 " + (message.sender === agent._id ? 'bg-gray-200' : 'bg-gray-200')}>
+                        {message.text}
+                        {isImageMessage && (
+                            <div className="">
+                                <img src={"http://www.letsgo.uno/uploads/" + message.file} alt="Image" />
+                            </div>
+                        )}
+                        {isAudioMessage && (
+                            <div className="">
+                                <audio controls>
+                                    <source src={"http://www.letsgo.uno/uploads/" + message.file} type="audio/mpeg" />
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                        )}
+                        {isVideoMessage && (
+                            <div className="">
+                                <video controls>
+                                    <source src={"http://www.letsgo.uno/uploads/" + message.file} type="video/mp4" />
+                                    Your browser does not support the video element.
+                                </video>
+                            </div>
+                        )}
+                        <div className="flex justify-between mb-1">
+                            <span className="text-gray-500 text-xs">
+                                {isValidDate ? createdAt.toLocaleString() : new Date().toLocaleString()}
+                                {/* Display the timestamp or current date/time */}
+                            </span>
+                            {/* You can add other message metadata here */}
                         </div>
-                    )
-                    }
+                    </div>
+                </div>
+            );
+        })}
+        <div ref={messageBoxRef}></div>
+    </div>
+)}
 
 
                     {!!selectedUserid &&
@@ -196,6 +229,7 @@ export default function Agentchat() {
                     }
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

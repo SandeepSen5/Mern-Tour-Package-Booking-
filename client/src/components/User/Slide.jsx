@@ -13,7 +13,6 @@ export default function ActionAreaCard() {
 
   useEffect(() => {
     axios.get('/allcategory').then((response) => {
-      console.log(response.data);
       setCategories(response.data);
     });
   }, []);
@@ -33,7 +32,7 @@ export default function ActionAreaCard() {
                       height="100"
                       img
                       className="object-cover aspect-square rounded-2xl"
-                      src={"http://localhost:4000/uploads/" + category.photos[0]}
+                      src={"http://www.letsgo.uno/uploads/" + category.photos[0]}
                     />
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="div">
@@ -51,5 +50,4 @@ export default function ActionAreaCard() {
       </div>
     </div>
   )
-
 }

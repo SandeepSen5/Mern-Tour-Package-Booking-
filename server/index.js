@@ -32,6 +32,13 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+// app.use(cors({
+//     credentials: true,
+//     origin: 'http://localhost:5173',
+// }));
+
+
+
 mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log('connected')
@@ -72,5 +79,4 @@ const server = app.listen(4000, () => {
     // Use the createWebSocketServer function to set up WebSocket connections
     createWebSocketServer(server);
 });
-
 

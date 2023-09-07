@@ -2,10 +2,9 @@ import { useState } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import { Navigate } from "react-router-dom";
 import UserNav from "../../components/User/UserNav";
-import { useEffect } from "react";
 import { logout, reset } from '../../redux/slices/user/userSlice';
 import VerticalTabs from "../../components/User/ProfileUpdate";
-import axios from "axios";
+import Footer from "../../components/User/Footer";
 export default function AccountPage() {
 
     const [redirectlogin, setRedirectlogin] = useState(null)
@@ -14,7 +13,6 @@ export default function AccountPage() {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.user)
 
-   
 
     if (redirectlogin) {
         return <Navigate to={redirect} />;
@@ -31,24 +29,24 @@ export default function AccountPage() {
     }
 
     return (
-        <div>
+        <div className=" flex flex-col ">
             <UserNav />
-            {/* {user && (
-                <div className="text-center max-w-lg mx-auto ">
-                    Logged in as {user.name}({user.email})<br />
-                </div>
-            )} */}
-            {user && (
-                <div className="my-4 max-w-lg mx-auto ">
-                    <VerticalTabs />
-                </div>
-            )}
-            {!user &&
-                <div className="text-center max-w-lg mx-auto mt-20 text-3xl ">
-                    Please Login !!!
-                    <h1 className="mt-4">#Travel Around The World..</h1>
-                </div>
-            }
+            <div className="flex-grow mb-5">
+                {user && (
+                    <div className="my-4 max-w-lg mx-auto">
+                        <VerticalTabs />
+                    </div>
+                )}
+                {!user && (
+                    <div className="text-center max-w-lg mx-auto mt-20 text-3xl">
+                        Please Login !!!
+                        <h1 className="mt-4">#Travel Around The World..</h1>
+                    </div>
+                )}
+            </div>
+            <div className="mt-10">
+                <Footer />
+            </div>
         </div>
     );
 }

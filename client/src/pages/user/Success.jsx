@@ -4,6 +4,7 @@ import UserNav from "../../components/User/UserNav";
 import { useSelector } from 'react-redux';
 import axios from "axios";
 import { useState } from "react";
+import Footer from "../../components/User/Footer";
 
 export default function Success() {
 
@@ -37,16 +38,23 @@ export default function Success() {
     }
 
     return (
-        <div>
+        <div className="flex flex-col ">
             <UserNav />
-            <div className="mt-10">
+            <div className="mt-10 mb-4 ">
                 <h1 className="font-bold text-center ">
                     <span className="bg-green-300 text-3xl px-2 py-1 rounded-full">
-                        Payment SucessFull
+                        Payment Successful
                     </span>
                 </h1>
             </div>
+            <div className="text-center mt-8 text-2xl flex-grow">
+                Enjoy Your package!
+            </div>
+           <div className="mt-80">
+           <Footer />
+           </div>
         </div>
-    )
+    );
+
 }
 

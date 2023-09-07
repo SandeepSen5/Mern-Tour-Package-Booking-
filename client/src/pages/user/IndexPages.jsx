@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
-import UserNav from "../../components/User/UserNav"
-import axios from "axios"
+import { useEffect, useState } from "react";
+import UserNav from "../../components/User/UserNav";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import Slide from "../../components/User/Slide";
 import DiscreteSlider from "../../components/User/PriceSlider";
@@ -11,12 +11,11 @@ export default function IndexPages() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredPlaces, setFilteredPlaces] = useState(places);
   const [maxPrice, setMaxPrice] = useState(65000);
-  console.log(maxPrice, "priceeeeeeeeeeeeeeeeeee");
+  
 
   useEffect(() => {
     axios.get(import.meta.env.VITE_USER_AP_ALLPLACES ).then((response) => {
       setPlaces(response.data);
-
     })
   }, [])
 
@@ -38,11 +37,11 @@ export default function IndexPages() {
     <div>
       <UserNav />
       <Slide />
-      <div className="bg-red-300 -mx-3 mt-10 grid grid-cols-1 md:grid-cols-[1fr_2fr] rounded-3xl">
+      <div className="bg-red-300 -mx-3 mt-10 grid grid-cols-1 md:grid-cols-[1fr_2fr] rounded-xl">
 
-        <div className="relative">
-          <input className="mx-3" type="text" placeholder="Search By Place" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-          <div className="absolute top-5 right-0 bg-white-500 rounded-2xl">
+        <div className="relative p-1 ">
+          <input className="" type="text" placeholder="Search By Place" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <div className="absolute top-5 right-5 bg-white-500 ">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
@@ -71,6 +70,7 @@ export default function IndexPages() {
             </Link>
           ))}
       </div>
+
       <Footer />
     </div>
   )

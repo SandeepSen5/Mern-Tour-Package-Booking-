@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout, reset } from '../../redux/slices/agent/agentSlice'
 import { useState, useEffect } from "react";
 import AgentProfile from "../../components/Agent/AgentProfileUpdate"
+import Footer from "../../components/User/Footer"
 
 export default function AccountProfile() {
     const [redirect, setRedirect] = useState(null);
@@ -26,7 +27,7 @@ export default function AccountProfile() {
     if (updatedSubpage === undefined) {
         updatedSubpage = 'profile';
     }
- 
+
     async function logoff() {
         dispatch(logout());
         dispatch(reset());
@@ -40,6 +41,9 @@ export default function AccountProfile() {
                     <AgentProfile />
                 </div>
             )}
+            <div className="mt-48">
+                <Footer />
+            </div>
         </div>
     );
 }

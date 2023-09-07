@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
 import CheckoutForm from "../../components/User/CheckoutForm";
-
+import Footer from "../../components/User/Footer";
 const stripePromise = loadStripe("pk_test_51Nci8ASGZJukKXvUderxBN1Bd6hKdafbxX9xDQo3v6emN6nu2Jvs5leULXV0GFy1OyziysnGvM4Hj5w7u3df7jdw00azWYME7E");
 
 const notify = (msg) => toast.info(msg, {
@@ -53,7 +53,7 @@ export default function Payment() {
             setClientSecret(response.data.clientSecret)
         })
     }
-console.log(clientSecret,"clientSecretclientSecretclientSecretclientSecretclientSecret");
+    console.log(clientSecret, "clientSecretclientSecretclientSecretclientSecretclientSecret");
     async function cod() {
         try {
             await axios.post('/codorder/' + `${id}`, null, { cache: false })
@@ -81,19 +81,19 @@ console.log(clientSecret,"clientSecretclientSecretclientSecretclientSecretclient
         <div className="App">
             <UserNav />
             <div className="mt-10 grid grid-cols-1 md:grid-cols-[1fr_2fr]">
-                <div className="bg-white shadow p-4 rounded-2xl">
+                <div className="bg-white shadow p-4 rounded-2xl mx-3">
                     <h1 className="mt-2">Hai {bookingdetails.name}</h1>
                     <h1 className="mt-2">Total Amount:{bookingdetails.guestno}*{bookingdetails.price} </h1>
                     <h2 className="mt-2">No of Guests: {bookingdetails.guestno}</h2>
                     {isValid(bookingDate) && (
                         <h2 className="mt-2">Booking Date On: {format(bookingDate, 'yyyy-MM-dd')}</h2>
                     )}
-                    <h2 className="mt-5 font-semibold text-center">Make Your Payments through</h2>
-                    <div className=" flex justify-center">
-                        <button onClick={confirmThis} className="mt-4 mx-auto p-2 rounded-2xl"> Online Payments</button>
+                    <h2 className="mt-5 font-semibold ">Make Your Payments through</h2>
+                    <div className=" flex">
+                        <button onClick={confirmThis} className="mt-4 p-2 rounded-2xl"> Online Payments</button>
                     </div>
-                    <h2 className="mt-5 font-semibold text-center">OR</h2>
-                    <div className=" flex justify-center">
+                    <h2 className="mt-5 font-semibold mx-10">OR</h2>
+                    <div className=" flex ">
                         <button onClick={cod} className=" mt-4 p-2 rounded-2xl"> Wallet Purchase</button>
                     </div>
                 </div>
@@ -106,6 +106,9 @@ console.log(clientSecret,"clientSecretclientSecretclientSecretclientSecretclient
                 </div>
             </div>
             <ToastContainer />
+           <div className="mt-20">
+           <Footer />
+           </div>
         </div>
     )
 }

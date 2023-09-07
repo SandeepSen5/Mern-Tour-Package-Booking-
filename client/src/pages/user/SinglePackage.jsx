@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import AnchorElTooltips from "../../components/User/BookingWarning";
 
 const userSchema = yup.object().shape({
-    name: yup.string().required("Name is required").trim(), // Adding .trim() to remove leading/trailing whitespaces
+    name: yup.string().required("Name is required").trim(), 
     email: yup.string().email("Invalid email format").required("Email is required").trim(),
     phone: yup
         .string()
@@ -41,8 +41,7 @@ export default function SinglePackage() {
     const [errors, setErrors] = useState({});
     const [slots, setSlots] = useState('')
     const { user } = useSelector((state) => state.user);
-    console.log(user, "usersssssssssss")
-    console.log(bookin, "bookin")
+   
     useEffect(() => {
         if (!id) {
             return;
@@ -58,6 +57,7 @@ export default function SinglePackage() {
         })
 
     }, [id, update])
+
 
     if (!place) {
         return '';
@@ -85,7 +85,6 @@ export default function SinglePackage() {
                 .then((response) => {
                     setRedirect(`/payment/${response.data._id}`);
                 })
-
         } catch (error) {
             if (error instanceof yup.ValidationError) {
                 const newErrors = {};
@@ -159,7 +158,7 @@ export default function SinglePackage() {
     return (
         <div>
             <UserNav />
-            <div className="mt-8 bg-gray-100 -mx-8 px-8 py-6">
+            <div className="mt-8 bg-gray-100 -mx-8 px-8 py-6" >
                 <h1 className="text-3xl">{place.title}</h1>
                 <a className="flex gap-2 my-2 text-sm block font-semibold underline" target="_blank" href={`https://maps.google.com/?q=${place.title}`}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

@@ -2,9 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function UserNav() {
     const { pathname } = useLocation();
-    console.log(pathname)
     let subpage = pathname.split('/')?.[1];
-    console.log(subpage, "subpage ");
     if (subpage == '') {
         subpage = "Home";
     }
