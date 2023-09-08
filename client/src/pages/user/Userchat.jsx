@@ -44,7 +44,7 @@ export default function Userchat() {
 
     function connectionToWs() {
         // const ws = new WebSocket('ws://localhost:4000')
-        const ws = new WebSocket('ws://letsgo.uno:4000')
+        const ws = new WebSocket('wss://letsgo.uno')
         setWs(ws);
         ws.addEventListener('message', handleMessage);
         ws.addEventListener('close', () => {
