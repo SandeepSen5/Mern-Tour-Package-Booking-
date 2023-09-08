@@ -335,7 +335,7 @@ exports.myBookings = async (req, res, next) => {
         const allBookings = await Order.find({ owner: req.userId }).populate({
             path: 'place',
             model: 'Place',
-        });
+        }).sort({ bookin: 'desc' });
         console.log(allBookings);
         res.status(200).json(allBookings);
     }
@@ -350,7 +350,7 @@ exports.myBookingBill = async (req, res, next) => {
         const { id } = req.params;
         console.log(id);
         const billDetail = await Order.findById(id).populate({
-            path: 'place',  
+            path: 'place',
             model: 'Place',
         });
         console.log(billDetail);

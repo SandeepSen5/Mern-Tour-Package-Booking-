@@ -38,7 +38,6 @@ app.use(cors(corsOptions));
 // }));
 
 
-
 mongoose.connect(process.env.MONGO_URL)
     .then(() => {
         console.log('connected')
@@ -46,9 +45,8 @@ mongoose.connect(process.env.MONGO_URL)
     .catch(err => console.log(err));
 
 
-
-const buildPath = path.join(__dirname, '../client/dist');
-app.use(express.static(buildPath));
+// const buildPath = path.join(__dirname, '../client/dist');
+// app.use(express.static(buildPath));
 
 app.use('/admin', adminRouter);
 app.use('/agent', agentRouter);
@@ -64,7 +62,6 @@ app.get("/*", function (req, res) {
         }
     );
 });
-
 
 
 app.use((err, req, res, next) => {

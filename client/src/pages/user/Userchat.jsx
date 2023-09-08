@@ -261,9 +261,14 @@ export default function Userchat() {
                                                 {message.text}
                                                 {isImageMessage && (
                                                     <div className="">
-                                                        <img src={"http://www.letsgo.uno/uploads/" + message.file} alt="Image" />
+                                                        <img
+                                                            src={"http://www.letsgo.uno/uploads/" + message.file}
+                                                            alt="Image"
+                                                            style={{ maxWidth: '200px', maxHeight: '200px' }} // Adjust the values as needed
+                                                        />
                                                     </div>
                                                 )}
+
                                                 {isAudioMessage && (
                                                     <div className="">
                                                         <audio controls>
