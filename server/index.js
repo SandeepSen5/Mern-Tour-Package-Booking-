@@ -22,8 +22,8 @@ app.use(cookieParser());
 app.use('/static', express.static(path.join(__dirname, 'public')))
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')))
 
-// app.use('/uploads',express.static(__dirname+'/uploads'));
-// app.use(express.static(path.join(__dirname, '/public/static')));
+app.use('/uploads',express.static(__dirname+'/uploads'));
+app.use(express.static(path.join(__dirname, '/public/static')));
 
 const corsOptions = {
     origin: ['https://letsgo.uno', 'https://www.letsgo.uno'],

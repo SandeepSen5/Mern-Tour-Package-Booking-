@@ -25,13 +25,21 @@ export default function Agentchat() {
         connectionToWs();
     }, []);
 
+
+
     if (!agent) {
-        return <Navigate to={'/agent/login'} />;
+        setRedirect('/agent/login');
+        // return <Navigate to={'/agent/login'} />;
     }
 
 
+    if (redirect) {
+        return <Navigate to={'/agent/login'} />;
+    }
+
     function connectionToWs() {
-        const ws = new WebSocket('ws://localhost:4000')
+        // const ws = new WebSocket('ws://localhost:4000')
+        const ws = new WebSocket('ws://letsgo.uno:4000')
         setWs(ws);
         ws.addEventListener('message', handleMessage);
         ws.addEventListener('close', () => {
@@ -138,7 +146,7 @@ export default function Agentchat() {
                         </svg>
                         Connect With Users</div>
                     {Object.keys(agents).map(userId => (
-                        <div key={userId} onClick={() => setSelectedUserid(userId)} className={"border-b border-gray-200 flex items-center gap-1 mb-5 cursor-pointer " + (userId == selectedUserid ? 'bg-blue-50' : 'bg-gray-50')}>
+                        <div key={userId} onClick={() => setSelectedUserid(userId)} className={"border-b border-gray-200 flex items-center gap-1 mb-5 cursor-pointer " + (userId == selectedUserid ? 'bg-gray-400' : 'bg-gray-50')}>
                             <Avatar online={false} username={agents[userId]} userId={userId} />
                             <span>{agents[userId]}</span>
                         </div>
@@ -146,7 +154,7 @@ export default function Agentchat() {
 
                 </div>
 
-                <div className=" flex flex-col bg-blue-50 w-2/3 p-2">
+                <div className=" flex flex-col bg-gray-400 w-2/3 p-2">
 
                     {!selectedUserid && <div className="flex-grow">
                         <div className="flex justify-center items-center h-full ">
@@ -155,60 +163,73 @@ export default function Agentchat() {
                     </div>
                     }
 
-
-{!!selectedUserid && (
-    <div className="flex-grow overflow-y-scroll p-2 my-2 rounded-2xl text-sm">
-        {messagesWithoutDupes.map((message) => {
-            // Check if message.createdAt is a valid date
-            const createdAt = new Date(message.createdAt);
-            const isValidDate = !isNaN(createdAt.getTime());
-
-            // Check if the message contains an audio file
-            const isAudioMessage = message.file && message.file.endsWith(".mp3");
-            const isVideoMessage = message.file && message.file.endsWith(".mp4");
-            const isImageMessage =
-                message.file &&
-                (message.file.endsWith(".jpg") || message.file.endsWith(".png") || message.file.endsWith(".gif"));
-
-            return (
-                <div key={message._id} className={message.sender === agent._id ? 'text-right' : 'text-left'}>
-                    <div className={"text-left rounded-2xl inline-block p-2 mb-2 " + (message.sender === agent._id ? 'bg-gray-200' : 'bg-gray-200')}>
-                        {message.text}
-                        {isImageMessage && (
-                            <div className="">
-                                <img src={"https://www.letsgo.uno/uploads/" + message.file} alt="Image" />
+                    {selectedUserid && agents[selectedUserid] &&
+                        (
+                            <div className="bg-gray-300 rounded-xl">
+                                <div className="flex items-center text-center  gap-2 p-2 mr-10 my-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    <h2 className="text-xl">{agents[selectedUserid]}</h2>
+                                </div>
                             </div>
-                        )}
-                        {isAudioMessage && (
-                            <div className="">
-                                <audio controls>
-                                    <source src={"https://www.letsgo.uno/uploads/" + message.file} type="audio/mpeg" />
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </div>
-                        )}
-                        {isVideoMessage && (
-                            <div className="">
-                                <video controls>
-                                    <source src={"https://www.letsgo.uno/uploads/" + message.file} type="video/mp4" />
-                                    Your browser does not support the video element.
-                                </video>
-                            </div>
-                        )}
-                        <div className="flex justify-between mb-1">
-                            <span className="text-gray-500 text-xs">
-                                {isValidDate ? createdAt.toLocaleString() : new Date().toLocaleString()}
-                                {/* Display the timestamp or current date/time */}
-                            </span>
-                            {/* You can add other message metadata here */}
+                        )
+                    }
+
+
+                    {!!selectedUserid && (
+                        <div className="flex-grow overflow-y-scroll p-2 my-2 rounded-2xl text-sm">
+                            {messagesWithoutDupes.map((message) => {
+                                // Check if message.createdAt is a valid date
+                                const createdAt = new Date(message.createdAt);
+                                const isValidDate = !isNaN(createdAt.getTime());
+
+                                // Check if the message contains an audio file
+                                const isAudioMessage = message.file && message.file.endsWith(".mp3");
+                                const isVideoMessage = message.file && message.file.endsWith(".mp4");
+                                const isImageMessage =
+                                    message.file &&
+                                    (message.file.endsWith(".jpg") || message.file.endsWith(".png") || message.file.endsWith(".gif"));
+
+                                return (
+                                    <div key={message._id} className={message.sender === agent._id ? 'text-right' : 'text-left'}>
+                                        <div className={"text-left rounded-2xl inline-block p-2 mb-2 " + (message.sender === agent._id ? 'bg-gray-200' : 'bg-gray-200')}>
+                                            {message.text}
+                                            {isImageMessage && (
+                                                <div className="">
+                                                    <img src={"https://www.letsgo.uno/uploads/" + message.file} alt="Image" />
+                                                </div>
+                                            )}
+                                            {isAudioMessage && (
+                                                <div className="">
+                                                    <audio controls>
+                                                        <source src={"https://www.letsgo.uno/uploads/" + message.file} type="audio/mpeg" />
+                                                        Your browser does not support the audio element.
+                                                    </audio>
+                                                </div>
+                                            )}
+                                            {isVideoMessage && (
+                                                <div className="">
+                                                    <video controls>
+                                                        <source src={"https://www.letsgo.uno/uploads/" + message.file} type="video/mp4" />
+                                                        Your browser does not support the video element.
+                                                    </video>
+                                                </div>
+                                            )}
+                                            <div className="flex justify-between mb-1">
+                                                <span className="text-gray-500 text-xs">
+                                                    {isValidDate ? createdAt.toLocaleString() : new Date().toLocaleString()}
+                                                    {/* Display the timestamp or current date/time */}
+                                                </span>
+                                                {/* You can add other message metadata here */}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            <div ref={messageBoxRef}></div>
                         </div>
-                    </div>
-                </div>
-            );
-        })}
-        <div ref={messageBoxRef}></div>
-    </div>
-)}
+                    )}
 
 
                     {!!selectedUserid &&
