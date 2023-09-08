@@ -45,8 +45,8 @@ mongoose.connect(process.env.MONGO_URL)
     .catch(err => console.log(err));
 
 
-// const buildPath = path.join(__dirname, '../client/dist');
-// app.use(express.static(buildPath));
+const buildPath = path.join(__dirname, '../client/dist');
+app.use(express.static(buildPath));
 
 app.use('/admin', adminRouter);
 app.use('/agent', agentRouter);

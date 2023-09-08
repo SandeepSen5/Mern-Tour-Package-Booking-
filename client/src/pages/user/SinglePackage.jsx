@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import AnchorElTooltips from "../../components/User/BookingWarning";
 
 const userSchema = yup.object().shape({
-    name: yup.string().required("Name is required").trim(),
+    name: yup.string().required("Name is required").trim(), 
     email: yup.string().email("Invalid email format").required("Email is required").trim(),
     phone: yup
         .string()
@@ -41,7 +41,7 @@ export default function SinglePackage() {
     const [errors, setErrors] = useState({});
     const [slots, setSlots] = useState('')
     const { user } = useSelector((state) => state.user);
-
+   
     useEffect(() => {
         if (!id) {
             return;
@@ -49,10 +49,9 @@ export default function SinglePackage() {
         axios.get(import.meta.env.VITE_USER_SP_ALLREVIEWS + `${id}`).then((response) => {
             setReviews(response.data);
         })
-        axios.get(import.meta.env.VITE_USER_SP_SINGLEPLACE + `${id}`)
-            .then((response) => {
-                setPlace(response.data);
-            });
+        axios.get(import.meta.env.VITE_USER_SP_SINGLEPLACE + `${id}`).then((response) => {
+            setPlace(response.data);
+        });
         axios.get('/getslots/' + id).then((response) => {
             setSlots(response.data)
         })
