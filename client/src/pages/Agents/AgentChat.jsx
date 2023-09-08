@@ -38,7 +38,8 @@ export default function Agentchat() {
 
     function connectionToWs() {
         // const ws = new WebSocket('ws://localhost:4000')
-        const ws = new WebSocket('wss://letsgo.uno')
+        const ws = new WebSocket('wss://www.letsgo.uno:4000');
+
         setWs(ws);
         ws.addEventListener('message', handleMessage);
         ws.addEventListener('close', () => {
