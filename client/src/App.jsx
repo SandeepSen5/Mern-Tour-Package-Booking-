@@ -36,7 +36,7 @@ import Error from "./pages/ErrorPage/Error";
 import AgentError from "./pages/ErrorPage/AgentError";
 import AdminError from "./pages/ErrorPage/AdminError";
 import BillGenerate from "./components/User/BillGenereate";
-axios.defaults.baseURL = 'http://www.letsgo.uno';
+axios.defaults.baseURL = 'https://www.letsgo.uno';
 // axios.defaults.baseURL = 'http://localhost:4000';
 axios.defaults.withCredentials = true;
 //interceptor instance

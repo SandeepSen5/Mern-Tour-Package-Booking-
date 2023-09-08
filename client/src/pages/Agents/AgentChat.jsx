@@ -176,13 +176,13 @@ export default function Agentchat() {
                         {message.text}
                         {isImageMessage && (
                             <div className="">
-                                <img src={"http://www.letsgo.uno/uploads/" + message.file} alt="Image" />
+                                <img src={"https://www.letsgo.uno/uploads/" + message.file} alt="Image" />
                             </div>
                         )}
                         {isAudioMessage && (
                             <div className="">
                                 <audio controls>
-                                    <source src={"http://www.letsgo.uno/uploads/" + message.file} type="audio/mpeg" />
+                                    <source src={"https://www.letsgo.uno/uploads/" + message.file} type="audio/mpeg" />
                                     Your browser does not support the audio element.
                                 </audio>
                             </div>
@@ -190,7 +190,7 @@ export default function Agentchat() {
                         {isVideoMessage && (
                             <div className="">
                                 <video controls>
-                                    <source src={"http://www.letsgo.uno/uploads/" + message.file} type="video/mp4" />
+                                    <source src={"https://www.letsgo.uno/uploads/" + message.file} type="video/mp4" />
                                     Your browser does not support the video element.
                                 </video>
                             </div>

@@ -50,7 +50,7 @@ export default function PlacesPage() {
                         {place.owner === agent._id ? (
                             <Link to={`/agent/places/${place._id}`} className="flex cursor-pointer gap-4 bg-gray-200 p-4 rounded-2xl mb-3">
                                 <div className="bg-gray-300 grow shrink-0 object-cover">
-                                    <img className="w-32 h-32 object-cover rounded-lg" src={`http://www.letsgo.uno/uploads/${place.photos[0]}`} alt={`Place ${place.title}`} />
+                                    <img className="w-32 h-32 object-cover rounded-lg" src={`https://www.letsgo.uno/uploads/${place.photos[0]}`} alt={`Place ${place.title}`} />
                                 </div>
                                 <div className="grow-0 shrink">
                                     <h2 className="text-xl">{place.title}</h2>

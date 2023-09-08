@@ -32,7 +32,7 @@ export default function ActionAreaCard() {
                       height="100"
                       img
                       className="object-cover aspect-square rounded-2xl"
-                      src={"http://www.letsgo.uno/uploads/" + category.photos[0]}
+                      src={"https://www.letsgo.uno/uploads/" + category.photos[0]}
                     />
                     <CardContent>
                       <Typography gutterBottom variant="h5" component="div">

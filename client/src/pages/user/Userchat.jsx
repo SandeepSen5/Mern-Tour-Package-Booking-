@@ -262,7 +262,7 @@ export default function Userchat() {
                                                 {isImageMessage && (
                                                     <div className="">
                                                         <img
-                                                            src={"http://www.letsgo.uno/uploads/" + message.file}
+                                                            src={"https://www.letsgo.uno/uploads/" + message.file}
                                                             alt="Image"
                                                             style={{ maxWidth: '200px', maxHeight: '200px' }} // Adjust the values as needed
                                                         />
@@ -272,7 +272,7 @@ export default function Userchat() {
                                                 {isAudioMessage && (
                                                     <div className="">
                                                         <audio controls>
-                                                            <source src={"http://www.letsgo.uno/uploads/" + message.file} type="audio/mpeg" />
+                                                            <source src={"https://www.letsgo.uno/uploads/" + message.file} type="audio/mpeg" />
                                                             Your browser does not support the audio element.
                                                         </audio>
                                                     </div>
@@ -280,7 +280,7 @@ export default function Userchat() {
                                                 {isVideoMessage && (
                                                     <div className="">
                                                         <video controls>
-                                                            <source src={"http://www.letsgo.uno/uploads/" + message.file} type="video/mp4" />
+                                                            <source src={"https://www.letsgo.uno/uploads/" + message.file} type="video/mp4" />
                                                             Your browser does not support the video element.
                                                         </video>
                                                     </div>

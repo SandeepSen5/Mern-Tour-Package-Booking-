@@ -115,7 +115,7 @@ export default function SinglePackage() {
                     </div>
                     {place?.photos?.length > 0 && place.photos.map((photo, index) => (
                         <div key={index}>
-                            <img className=" object-cover aspect-square rounded-2xl" src={"http://www.letsgo.uno/uploads/" + photo} />
+                            <img className=" object-cover aspect-square rounded-2xl" src={"https://www.letsgo.uno/uploads/" + photo} />
                         </div>
                     )
                     )}
@@ -169,12 +169,12 @@ export default function SinglePackage() {
                 <div className="relative">
                     <div className="grid gap-2 grid-cols-[2fr_1fr]">
                         <div>
-                            <img className="aspect-square object-cover" src={"http://www.letsgo.uno/uploads/" + place.photos[0]} />
+                            <img className="aspect-square object-cover" src={"https://www.letsgo.uno/uploads/" + place.photos[0]} />
                         </div>
                         <div className="grid gap">
-                            <img className="aspect-square object-cover" src={"http://www.letsgo.uno/uploads/" + place.photos[2]} />
+                            <img className="aspect-square object-cover" src={"https://www.letsgo.uno/uploads/" + place.photos[2]} />
                             <div className="border border-red-500  overflow-hidden">
-                                <img className="aspect-square object-cover relative top-2" src={"http://www.letsgo.uno/uploads/" + place.photos[3]} />
+                                <img className="aspect-square object-cover relative top-2" src={"https://www.letsgo.uno/uploads/" + place.photos[3]} />
                             </div>
                         </div>
                     </div>

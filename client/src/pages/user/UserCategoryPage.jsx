@@ -26,7 +26,7 @@ export default function UserCategoryPage() {
         {places.length > 0 && places.map((place) => (
           <Link to={'/package/' + place._id} key={place._id}>
             <div className=" bg-gray-500 rounded-2xl flex">
-              <img className=" object-cover aspect-square rounded-2xl" src={"http://www.letsgo.uno/uploads/" + place.photos[0]} />
+              <img className=" object-cover aspect-square rounded-2xl" src={"https://www.letsgo.uno/uploads/" + place.photos[0]} />
             </div>
             <h2 className="text-sm font-bold">{place.title}</h2>
             <h3 className="text-sm truncate">{place.address}</h3>
