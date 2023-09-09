@@ -88,7 +88,7 @@ export default function Agentchat() {
                     setMessage(data);
                 });
             }
-        }, 1000);
+        }, 2000);
     }
     console.log(messages, "messagesssssssssssssss")
 

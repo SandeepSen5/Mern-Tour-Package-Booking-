@@ -101,7 +101,7 @@ export default function Userchat() {
                     const { data } = response;
                     setMessage(data);
                 });
-            }, 1000);
+            }, 2000);
         }
     }
 
