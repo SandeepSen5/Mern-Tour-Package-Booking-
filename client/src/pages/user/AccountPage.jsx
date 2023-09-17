@@ -44,7 +44,7 @@ export default function AccountPage() {
                     </div>
                 )}
             </div>
-            <div className="mt-10">
+            <div className="mt-80">
                 <Footer />
             </div>
         </div>

@@ -11,10 +11,10 @@ export default function IndexPages() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredPlaces, setFilteredPlaces] = useState(places);
   const [maxPrice, setMaxPrice] = useState(65000);
-  
+
 
   useEffect(() => {
-    axios.get(import.meta.env.VITE_USER_AP_ALLPLACES ).then((response) => {
+    axios.get(import.meta.env.VITE_USER_AP_ALLPLACES).then((response) => {
       setPlaces(response.data);
     })
   }, [])
@@ -37,7 +37,7 @@ export default function IndexPages() {
     <div>
       <UserNav />
       <Slide />
-      <div className="bg-red-300 -mx-3 mt-10 grid grid-cols-1 md:grid-cols-[1fr_2fr] rounded-xl">
+      <div className="bg-neutral-300 -mx-3 mt-10 grid grid-cols-1 md:grid-cols-[1fr_2fr] rounded-xl">
 
         <div className="relative p-1 ">
           <input className="" type="text" placeholder="Search By Place" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
@@ -49,13 +49,15 @@ export default function IndexPages() {
           </div>
         </div>
 
-        <div className="bg-red-300 flex">
+        <div className=" flex">
           <div className=" flex items-center text-center m-auto justify-center">
             <span className="p-2 text-2xl mb-2">Price Slider</span>
             <DiscreteSlider onPriceChange={setMaxPrice} />
           </div>
         </div>
+        
       </div>
+
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 mt-20 gap-x-6 gap-y-6">
         {filteredPlaces.length > 0 &&

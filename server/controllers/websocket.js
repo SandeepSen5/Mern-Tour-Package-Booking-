@@ -69,7 +69,6 @@ const createWebSocketServer = (server) => {
                     console.log(path1, "path123123123");
                     console.log({ file });
                 }
-
                 if (recipient && (text || file) && sender) {
                     const messageDoc = await Message.create({
                         sender,

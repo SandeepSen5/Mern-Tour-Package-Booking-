@@ -80,13 +80,13 @@ export default function Userchat() {
         if (ev) {
             ev.preventDefault();
         }
-        Notification.requestPermission().then(perm => {
-            if (perm == "granted") {
-                new Notification("Example Notification", {
-                    body: "This is more text",
-                });
-            }
-        })
+        // Notification.requestPermission().then(perm => {
+        //     if (perm == "granted") {
+        //         new Notification("Example Notification", {
+        //             body: "This is more text",
+        //         });
+        //     }
+        // })
         ws.send(JSON.stringify({
             sender: user._id,
             recipient: selectedUserid,
